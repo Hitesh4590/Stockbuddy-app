@@ -1,0 +1,1 @@
+{"flutter":{"platforms":{"android":{"default":{"projectId":"stockbuddy-dev","appId":"1:172396848872:android:86348e991a5b7dbe85cb5d","fileOutput":"android/app/google-services.json"}},"dart":{"lib/firebase_options.dart":{"projectId":"stockbuddy-dev","configurations":{"android":"1:172396848872:android:86348e991a5b7dbe85cb5d","ios":"1:172396848872:ios:91c99d6304ccb8a585cb5d"}}}}}}

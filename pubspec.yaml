@@ -1,0 +1,35 @@
+name: stockbuddy_flutter_app
+description: "Boilerplate for all the flutter apps!"
+publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+
+# The following defines the version and build number for your application.
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.3.0 <4.0.0'
+
+dependencies:
+  cached_network_image: ^3.3.1
+  cupertino_icons: ^1.0.6
+  flutter:
+    sdk: flutter
+  intl: ^0.18.1
+  shared_preferences: ^2.2.2
+  i18n_extension: ^11.0.12
+  rxdart: ^0.27.7
+  shimmer: ^3.0.0
+  dio:
+  firebase_core: ^2.31.1
+  cloud_firestore: ^4.17.4
+
+dev_dependencies:
+  flutter_lints: ^3.0.0
+  flutter_test:
+    sdk: flutter
+
+flutter:
+
+  uses-material-design: true
+
+  assets:
+    - assets/i18n/

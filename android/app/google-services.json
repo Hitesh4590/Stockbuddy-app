@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "172396848872",
+    "firebase_url": "https://stockbuddy-dev-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "stockbuddy-dev",
+    "storage_bucket": "stockbuddy-dev.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:172396848872:android:86348e991a5b7dbe85cb5d",
+        "android_client_info": {
+          "package_name": "com.stockbuddy.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB5n7gpZpwXmgQtbMZmmQ1RQQIjC64_dsc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
