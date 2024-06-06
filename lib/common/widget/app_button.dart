@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:stockbuddy_flutter_app/common/theme/color_constants.dart';
 import 'package:stockbuddy_flutter_app/common/theme/text_styles.dart';
 import 'package:stockbuddy_flutter_app/common/widget/rounded_loading_button.dart';
+
+import '../theme/color_constants.dart';
 
 class AppButton extends StatelessWidget {
   final String labelText;
@@ -28,7 +29,7 @@ class AppButton extends StatelessWidget {
     this.buttonWidth,
     this.prefixIcon,
     this.borderRadius,
-    this.color = ColorConstants.primaryLight,
+    this.color = ColorConstants.darkGrey,
     this.borderColor,
     this.controller,
     this.animateOnTap = false,

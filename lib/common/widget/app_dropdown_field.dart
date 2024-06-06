@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 typedef DisplayConverter<T> = String Function(T);
 
 class AppDropdownTextFormField<T> extends StatefulWidget {
-
   final String? label;
   final List<T> items;
   final T? selectedValue;
@@ -61,6 +60,7 @@ class _AppDropdownTextFormFieldState<T>
     );
     return DropdownButtonHideUnderline(
       child: DropdownButtonFormField<T>(
+        dropdownColor: Colors.white,
         items: widget.items
             .map((e) => DropdownMenuItem<T>(
                   value: e,
@@ -74,6 +74,7 @@ class _AppDropdownTextFormFieldState<T>
         validator: widget.validator,
         decoration: InputDecoration(
           filled: true,
+          fillColor: Colors.white,
           isDense: true,
           errorStyle: const TextStyle(fontSize: 0),
           label: widget.label != null ? Text(widget.label!) : null,

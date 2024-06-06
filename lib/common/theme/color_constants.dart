@@ -6,6 +6,8 @@ class ColorConstants {
   /// General
   static const Color white = Color(0xffffffff);
   static const Color black = Color(0xff000000);
+  static const Color lightGrey = Color(0xffA4A4A4);
+  static const Color darkGrey = Color(0xff3A3A3A);
 
   /// Light mode
   static const Color backgroundColorLight = Color(0xfff2f2f2);

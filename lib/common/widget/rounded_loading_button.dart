@@ -102,7 +102,7 @@ class RoundedLoadingButton extends StatefulWidget {
     this.loaderStrokeWidth = 2.0,
     this.animateOnTap = true,
     this.valueColor = Colors.white,
-    this.borderRadius = 35,
+    this.borderRadius = 40,
     this.elevation = 2,
     this.duration = const Duration(milliseconds: 500),
     this.curve = Curves.easeInOutCirc,
@@ -124,7 +124,8 @@ class RoundedLoadingButton extends StatefulWidget {
 }
 
 /// Class implementation
-class RoundedLoadingButtonState extends State<RoundedLoadingButton> with TickerProviderStateMixin {
+class RoundedLoadingButtonState extends State<RoundedLoadingButton>
+    with TickerProviderStateMixin {
   late AnimationController _buttonController;
   late AnimationController _borderController;
   late AnimationController _checkButtonController;
@@ -143,7 +144,8 @@ class RoundedLoadingButtonState extends State<RoundedLoadingButton> with TickerP
       alignment: FractionalOffset.center,
       decoration: BoxDecoration(
         color: widget.successColor ?? theme.primaryColor,
-        borderRadius: BorderRadius.all(Radius.circular(_bounceAnimation.value / 2)),
+        borderRadius:
+            BorderRadius.all(Radius.circular(_bounceAnimation.value / 2)),
       ),
       width: _bounceAnimation.value,
       height: _bounceAnimation.value,
@@ -159,7 +161,8 @@ class RoundedLoadingButtonState extends State<RoundedLoadingButton> with TickerP
       alignment: FractionalOffset.center,
       decoration: BoxDecoration(
         color: widget.errorColor,
-        borderRadius: BorderRadius.all(Radius.circular(_bounceAnimation.value / 2)),
+        borderRadius:
+            BorderRadius.all(Radius.circular(_bounceAnimation.value / 2)),
       ),
       width: _bounceAnimation.value,
       height: _bounceAnimation.value,
@@ -234,11 +237,14 @@ class RoundedLoadingButtonState extends State<RoundedLoadingButton> with TickerP
   void initState() {
     super.initState();
 
-    _buttonController = AnimationController(duration: widget.duration, vsync: this);
+    _buttonController =
+        AnimationController(duration: widget.duration, vsync: this);
 
-    _checkButtonController = AnimationController(duration: widget.completionDuration, vsync: this);
+    _checkButtonController =
+        AnimationController(duration: widget.completionDuration, vsync: this);
 
-    _borderController = AnimationController(duration: widget._borderDuration, vsync: this);
+    _borderController =
+        AnimationController(duration: widget._borderDuration, vsync: this);
 
     _bounceAnimation = Tween<double>(begin: 0, end: widget.height).animate(
       CurvedAnimation(
@@ -250,7 +256,8 @@ class RoundedLoadingButtonState extends State<RoundedLoadingButton> with TickerP
       setState(() {});
     });
 
-    _squeezeAnimation = Tween<double>(begin: widget.width, end: widget.height).animate(
+    _squeezeAnimation =
+        Tween<double>(begin: widget.width, end: widget.height).animate(
       CurvedAnimation(parent: _buttonController, curve: widget.curve),
     );
 
@@ -381,7 +388,8 @@ class RoundedLoadingButtonController {
     _resetListener = resetListener;
   }
 
-  final BehaviorSubject<ButtonState> _state = BehaviorSubject<ButtonState>.seeded(ButtonState.idle);
+  final BehaviorSubject<ButtonState> _state =
+      BehaviorSubject<ButtonState>.seeded(ButtonState.idle);
 
   /// A read-only stream of the button state
   Stream<ButtonState> get stateStream => _state.stream;

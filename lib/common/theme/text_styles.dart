@@ -7,10 +7,26 @@ class TextStyles {
   static const String poppins = 'Poppins';
 
   static TextStyle button = regular(color: ColorConstants.white);
+  static TextStyle regular_black({
+    double fontSize = 12,
+    Color color = Colors.black,
+    TextDecoration? textDecoration,
+    double? letterSpacing,
+    FontStyle? fontStyle,
+  }) =>
+      TextStyle(
+        fontSize: fontSize,
+        color: color,
+        fontWeight: FontWeight.w400,
+        fontFamily: poppins,
+        decoration: textDecoration,
+        letterSpacing: letterSpacing,
+        fontStyle: fontStyle,
+      );
 
   static TextStyle regular({
-    double fontSize = 14,
-    Color color = ColorConstants.black,
+    double fontSize = 12,
+    Color color = ColorConstants.lightGrey,
     TextDecoration? textDecoration,
     double? letterSpacing,
     FontStyle? fontStyle,
@@ -27,7 +43,7 @@ class TextStyles {
 
   static TextStyle medium({
     double fontSize = 14,
-    Color color = ColorConstants.black,
+    Color color = ColorConstants.darkGrey,
     TextDecoration? textDecoration,
     double? height,
     double? letterSpacing,
@@ -45,8 +61,8 @@ class TextStyles {
       );
 
   static TextStyle bold({
-    double fontSize = 14,
-    Color color = ColorConstants.black,
+    double fontSize = 12,
+    Color color = ColorConstants.darkGrey,
     TextDecoration? textDecoration,
     double? letterSpacing,
     FontStyle? fontStyle,
