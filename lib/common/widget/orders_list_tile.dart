@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:stockbuddy_flutter_app/common/extension.dart';
+import 'package:stockbuddy_flutter_app/common/theme/color_constants.dart';
 
 import '../theme/text_styles.dart';
 
@@ -22,11 +23,10 @@ class OrdersListTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-        height: 112,
-        width: 343,
+        width: double.infinity,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(15),
-          border: Border.all(width: 1, color: Color(0xffEEEEEE)),
+          border: Border.all(width: 1, color: ColorConstants.offWhite),
         ),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.stretch,

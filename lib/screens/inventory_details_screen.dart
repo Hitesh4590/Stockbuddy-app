@@ -5,7 +5,6 @@ import 'package:provider/provider.dart';
 import 'package:stockbuddy_flutter_app/common/extension.dart';
 import 'package:stockbuddy_flutter_app/common/theme/image_constants.dart';
 import 'package:stockbuddy_flutter_app/providers/inventory_details_provider.dart';
-
 import '../common/theme/color_constants.dart';
 import '../common/theme/text_styles.dart';
 

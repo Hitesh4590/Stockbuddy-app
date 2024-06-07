@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:stockbuddy_flutter_app/common/theme/color_constants.dart';
 import 'package:stockbuddy_flutter_app/common/theme/text_styles.dart';
 
@@ -199,10 +200,11 @@ class _AppTextFormFieldsState extends State<AppTextFormFields> {
                   height: 30,
                   width: 24,
                   child: Center(
-                    child: ImageIcon(
-                      AssetImage(widget.prefixIcon!),
-                      color: ColorConstants.black,
-                      size: 24,
+                    child: SvgPicture.asset(
+                      widget.prefixIcon!,
+                      colorFilter: ColorFilter.mode(
+                          ColorConstants.black, BlendMode.srcIn),
+                      fit: BoxFit.scaleDown,
                     ),
                   ),
                 ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:stockbuddy_flutter_app/common/extension.dart';
-
+import 'package:stockbuddy_flutter_app/common/theme/color_constants.dart';
 import '../theme/text_styles.dart';
 
 class GridviewTileWidget extends StatelessWidget {
@@ -40,26 +41,29 @@ class GridviewTileWidget extends StatelessWidget {
                 height: 30,
                 width: 30,
                 decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: ColorConstants.white,
                     borderRadius: BorderRadius.circular(20)),
-                child: Image.asset(iconPath).allp(5),
+                child: SvgPicture.asset(iconPath).allp(5),
               ),
               10.hs,
               Text(
                 'INR ',
-                style: TextStyles.bold(color: Colors.black, fontSize: 20),
+                style:
+                    TextStyles.bold(color: ColorConstants.black, fontSize: 20),
               ),
               5.hs,
               Text(
                 value,
-                style: TextStyles.bold(color: Colors.black, fontSize: 20),
+                style:
+                    TextStyles.bold(color: ColorConstants.black, fontSize: 20),
               ),
             ],
           ),
-          Spacer(),
+          const Spacer(),
           Text(
             labelText,
-            style: TextStyles.regular(color: Colors.black, fontSize: 10),
+            style:
+                TextStyles.regular(color: ColorConstants.black, fontSize: 10),
           ),
         ],
       ).allp(5),

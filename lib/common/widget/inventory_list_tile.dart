@@ -1,7 +1,7 @@
 import 'dart:core';
 import 'package:flutter/material.dart';
 import 'package:stockbuddy_flutter_app/common/extension.dart';
-
+import 'package:stockbuddy_flutter_app/common/theme/color_constants.dart';
 import '../theme/text_styles.dart';
 
 class InventoryListTile extends StatelessWidget {
@@ -23,8 +23,7 @@ class InventoryListTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-        height: 132,
-        width: 343,
+        width: double.infinity,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(15),
           border: Border.all(width: 1, color: Color(0xffEEEEEE)),
@@ -44,11 +43,13 @@ class InventoryListTile extends StatelessWidget {
                     width: 68,
                     height: 24,
                     decoration: BoxDecoration(
-                        color: Color(0xff4BAE4F).withOpacity(0.46),
+                        color:
+                            ColorConstants.inventoryInStock.withOpacity(0.46),
                         borderRadius: BorderRadius.circular(5)),
                     child: Text(
                       'In-stock',
-                      style: TextStyles.regular(color: Color(0xff38773B)),
+                      style: TextStyles.regular(
+                          color: ColorConstants.inventoryInStockText),
                     ).hp(6).vp(3),
                   ),
               ],
@@ -65,9 +66,12 @@ class InventoryListTile extends StatelessWidget {
                           border:
                               Border.all(color: Colors.transparent, width: 0),
                           borderRadius: BorderRadius.circular(20)),
-                      child: Image.network(
-                        image,
-                        fit: BoxFit.cover,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(10),
+                        child: Image.network(
+                          image,
+                          fit: BoxFit.cover,
+                        ),
                       ),
                     ),
                     if (quantity == 0)
@@ -84,7 +88,7 @@ class InventoryListTile extends StatelessWidget {
                           child: Container(
                             width: 76,
                             height: 20,
-                            color: Colors.black,
+                            color: ColorConstants.black,
                             child: Text(
                               'Out of stock',
                               style: TextStyles.regular(

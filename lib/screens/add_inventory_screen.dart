@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:image_picker/image_picker.dart';
@@ -9,6 +8,7 @@ import 'package:stockbuddy_flutter_app/common/util/validators.dart';
 import 'package:stockbuddy_flutter_app/common/widget/app_button.dart';
 import 'package:stockbuddy_flutter_app/common/widget/app_textfield.dart';
 import 'package:stockbuddy_flutter_app/common/widget/color_selection.dart';
+import 'package:stockbuddy_flutter_app/common/widget/upload_image_widget.dart';
 import 'package:stockbuddy_flutter_app/local_packages/dropdown_textfield-master/lib/dropdown_textfield.dart';
 import 'package:stockbuddy_flutter_app/model/inventory.dart';
 import 'package:stockbuddy_flutter_app/providers/add_inventory_provider.dart';
@@ -35,14 +35,6 @@ class _AddInventoryScreenState extends State<AddInventoryScreen> {
   TextEditingController quantityController = TextEditingController();
   TextEditingController sellingPriceController = TextEditingController();
   TextEditingController purchasePriceController = TextEditingController();
-
-  XFile? imageXFile;
-  final ImagePicker _picker = ImagePicker();
-
-  Future<void> _getImage() async {
-    imageXFile = await _picker.pickImage(source: ImageSource.gallery);
-  }
-
   @override
   Widget build(BuildContext context) {
     final provider = context.watch<AddInventoryProvider>();
@@ -124,10 +116,10 @@ class _AddInventoryScreenState extends State<AddInventoryScreen> {
                           return 'Please enter description';
                         }
                         if (value!.length < 100) {
-                          return 'Please enter atleast 100 charaters';
+                          return 'Please enter at least 100 characters';
                         }
                         if (value.length > 255) {
-                          return 'Please enter 255 charaters only';
+                          return 'Please enter 255 characters only';
                         }
                         return null;
                       },
@@ -163,147 +155,20 @@ class _AddInventoryScreenState extends State<AddInventoryScreen> {
                       'Please upload inventory image with maximum size 4MB or less',
                       style: TextStyles.regular(fontSize: 10),
                     ),
-                    Row(
-                      children: [
-                        InkWell(
-                          onTap: () async {
-                            await _getImage();
-                            provider.addImage(imageXFile!, 0);
-                            provider.addImageError();
-                          },
-                          child: Stack(
-                            children: [
-                              Container(
-                                height: 70,
-                                width: 70,
-                                decoration: BoxDecoration(
-                                    color: Color(0xffF1F1F1),
-                                    borderRadius: BorderRadius.circular(10)),
-                                child: provider.image1 == null
-                                    ? SvgPicture.asset(
-                                        ImageConstants.uploadImage,
-                                        fit: BoxFit.contain,
-                                      ).allp(10)
-                                    : Image.file(
-                                        File(provider.image1!.path),
-                                        fit: BoxFit.cover,
-                                      ),
-                              ),
-                              if (provider.image1 != null)
-                                Positioned(
-                                  left: 52,
-                                  child: InkWell(
-                                    child: CircleAvatar(
-                                      radius:
-                                          MediaQuery.of(context).size.width *
-                                              0.03,
-                                      backgroundColor: Colors.white,
-                                      child: SvgPicture.asset(
-                                          ImageConstants.cancelImage),
-                                    ),
-                                    onTap: () {
-                                      provider.removeImage(0);
-                                      provider.addImageError();
-                                    },
-                                  ),
-                                )
-                            ],
-                          ),
-                        ),
-                        10.hs,
-                        InkWell(
-                          onTap: () async {
-                            await _getImage();
-                            provider.addImage(imageXFile!, 1);
-                            provider.addImageError();
-                          },
-                          child: Stack(
-                            children: [
-                              Container(
-                                height: 70,
-                                width: 70,
-                                decoration: BoxDecoration(
-                                    color: Color(0xffF1F1F1),
-                                    borderRadius: BorderRadius.circular(10)),
-                                child: provider.image2 == null
-                                    ? SvgPicture.asset(
-                                        ImageConstants.uploadImage,
-                                        fit: BoxFit.contain,
-                                      ).allp(10)
-                                    : Image.file(
-                                        File(provider.image2!.path),
-                                        fit: BoxFit.cover,
-                                      ),
-                              ),
-                              if (provider.image2 != null)
-                                Positioned(
-                                  left: 52,
-                                  child: InkWell(
-                                    child: CircleAvatar(
-                                      radius:
-                                          MediaQuery.of(context).size.width *
-                                              0.03,
-                                      backgroundColor: Colors.white,
-                                      child: SvgPicture.asset(
-                                          ImageConstants.cancelImage),
-                                    ),
-                                    onTap: () {
-                                      provider.removeImage(1);
-                                      provider.addImageError();
-                                    },
-                                  ),
-                                )
-                            ],
-                          ),
-                        ),
-                        10.hs,
-                        InkWell(
-                          onTap: () async {
-                            await _getImage();
-                            provider.addImage(imageXFile!, 2);
-                            provider.addImageError();
-                          },
-                          child: Stack(
-                            children: [
-                              Container(
-                                height: 70,
-                                width: 70,
-                                decoration: BoxDecoration(
-                                    color: Color(0xffF1F1F1),
-                                    borderRadius: BorderRadius.circular(10)),
-                                child: provider.image3 == null
-                                    ? SvgPicture.asset(
-                                        ImageConstants.uploadImage,
-                                        fit: BoxFit.contain,
-                                      ).allp(10)
-                                    : Image.file(
-                                        File(provider.image3!.path),
-                                        fit: BoxFit.cover,
-                                      ),
-                              ),
-                              if (provider.image3 != null)
-                                Positioned(
-                                  left: 52,
-                                  child: InkWell(
-                                    child: CircleAvatar(
-                                      radius:
-                                          MediaQuery.of(context).size.width *
-                                              0.028,
-                                      backgroundColor: Colors.white,
-                                      child: SvgPicture.asset(
-                                          ImageConstants.cancelImage),
-                                    ),
-                                    onTap: () {
-                                      provider.removeImage(2);
-                                      provider.addImageError();
-                                    },
-                                  ),
-                                )
-                            ],
-                          ),
-                        ),
-                      ],
-                    ).allp(10),
+                    SizedBox(
+                      height: 102,
+                      child: ListView.builder(
+                          physics: const NeverScrollableScrollPhysics(),
+                          scrollDirection: Axis.horizontal,
+                          itemCount: 3,
+                          itemBuilder: (context, index) {
+                            return Padding(
+                              padding: const EdgeInsets.only(right: 10.0),
+                              child: UploadImageWidget(
+                                  provider: provider, index: index),
+                            );
+                          }).allp(10),
+                    ),
                     Text(
                       provider.errorText,
                       style:
@@ -453,14 +318,14 @@ class _AddInventoryScreenState extends State<AddInventoryScreen> {
                 labelText: 'Save',
                 onTap: () async {
                   List<XFile> images = [];
-                  if (provider.image1 != null) {
-                    images.add(provider.image1!);
+                  if (provider.images[0] != null) {
+                    images.add(provider.images[0]!);
                   }
-                  if (provider.image2 != null) {
-                    images.add(provider.image2!);
+                  if (provider.images[1] != null) {
+                    images.add(provider.images[1]!);
                   }
-                  if (provider.image3 != null) {
-                    images.add(provider.image3!);
+                  if (provider.images[2] != null) {
+                    images.add(provider.images[2]!);
                   }
 
                   if (_formKey.currentState!.validate() &&

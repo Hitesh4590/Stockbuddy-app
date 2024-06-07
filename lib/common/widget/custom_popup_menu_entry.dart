@@ -22,10 +22,6 @@ class CustomPopupMenuEntry extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(
-          /*borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: ColorConstans.lightGrey, width: 1),*/
-          ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
