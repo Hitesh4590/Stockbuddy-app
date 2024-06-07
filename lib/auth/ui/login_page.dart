@@ -3,7 +3,7 @@ import 'package:stockbuddy_flutter_app/app/app_configurations.dart';
 import 'package:stockbuddy_flutter_app/auth/bloc/login_bloc.dart';
 import 'package:stockbuddy_flutter_app/base/base_bloc.dart';
 import 'package:stockbuddy_flutter_app/base/base_stateful_widget.dart';
-import 'package:stockbuddy_flutter_app/common/extensions.dart';
+import 'package:stockbuddy_flutter_app/common/extension.dart';
 import 'package:stockbuddy_flutter_app/common/i18n/i18n_engine.dart';
 import 'package:stockbuddy_flutter_app/common/theme/app_colors.dart';
 import 'package:stockbuddy_flutter_app/common/widget/app_button.dart';
@@ -17,7 +17,6 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends BaseState<LoginPage> {
-
   final LoginBloc _bloc = LoginBloc();
 
   @override
@@ -32,7 +31,8 @@ class _LoginPageState extends BaseState<LoginPage> {
           child: Card(
             elevation: 0,
             color: AppColors.white,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
             child: Container(
               margin: const EdgeInsets.symmetric(
                 vertical: 20,

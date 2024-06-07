@@ -12,6 +12,10 @@ class AppTheme {
 
   ThemeData getAppTheme(BuildContext context) {
     return ThemeData(
+      splashColor: Colors.transparent,
+      appBarTheme: AppBarTheme(
+          surfaceTintColor: Colors.transparent,
+          shadowColor: Colors.transparent),
       scaffoldBackgroundColor: AppColors.background,
       primaryColor: AppColors.primary,
       cardTheme: Theme.of(context).cardTheme.copyWith(
