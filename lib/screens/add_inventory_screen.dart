@@ -49,7 +49,7 @@ class _AddInventoryScreenState extends State<AddInventoryScreen> {
         backgroundColor: Colors.white,
         title: Text(
           'Add Inventory',
-          style: TextStyles.regular_black(fontSize: 16),
+          style: TextStyles.regularBlack(fontSize: 16),
         ),
       ),
       body: SingleChildScrollView(
@@ -217,7 +217,7 @@ class _AddInventoryScreenState extends State<AddInventoryScreen> {
                     20.vs,
                     Text(
                       'Select Color',
-                      style: TextStyles.regular_black(
+                      style: TextStyles.regularBlack(
                         fontSize: 12,
                       ),
                     ),

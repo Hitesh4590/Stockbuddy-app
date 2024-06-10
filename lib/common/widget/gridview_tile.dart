@@ -51,7 +51,6 @@ class GridviewTileWidget extends StatelessWidget {
                 style:
                     TextStyles.bold(color: ColorConstants.black, fontSize: 20),
               ),
-              5.hs,
               Text(
                 value,
                 style:
@@ -66,7 +65,7 @@ class GridviewTileWidget extends StatelessWidget {
                 TextStyles.regular(color: ColorConstants.black, fontSize: 10),
           ),
         ],
-      ).allp(5),
+      ).allp(10),
     );
   }
 }

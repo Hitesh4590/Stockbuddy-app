@@ -46,7 +46,7 @@ class _InventoryDetailsScreenState extends State<InventoryDetailsScreen> {
         backgroundColor: Colors.white,
         title: Text(
           'Inventory Details',
-          style: TextStyles.regular_black(fontSize: 16),
+          style: TextStyles.regularBlack(fontSize: 16),
         ),
         actions: [
           GestureDetector(
@@ -170,7 +170,7 @@ class _InventoryDetailsScreenState extends State<InventoryDetailsScreen> {
             20.vs,
             Text(
               'SKU NO:${widget.skuNo}',
-              style: TextStyles.regular_black(),
+              style: TextStyles.regularBlack(),
             ),
             20.vs,
             Text(
@@ -182,7 +182,7 @@ class _InventoryDetailsScreenState extends State<InventoryDetailsScreen> {
               children: [
                 Text(
                   'Qty: ${widget.quantity}',
-                  style: TextStyles.regular_black(),
+                  style: TextStyles.regularBlack(),
                 ),
                 10.hs,
                 Container(
@@ -193,7 +193,7 @@ class _InventoryDetailsScreenState extends State<InventoryDetailsScreen> {
                 10.hs,
                 Text(
                   'Type: ${widget.type}',
-                  style: TextStyles.regular_black(),
+                  style: TextStyles.regularBlack(),
                 ),
               ],
             ),
@@ -207,7 +207,7 @@ class _InventoryDetailsScreenState extends State<InventoryDetailsScreen> {
                 5.hs,
                 Text(
                   widget.sellingPrice.toString(),
-                  style: TextStyles.regular_black(),
+                  style: TextStyles.regularBlack(),
                 ),
                 Spacer(),
                 Text(
@@ -217,7 +217,7 @@ class _InventoryDetailsScreenState extends State<InventoryDetailsScreen> {
                 5.hs,
                 Text(
                   widget.purchasePrice.toString(),
-                  style: TextStyles.regular_black(),
+                  style: TextStyles.regularBlack(),
                 )
               ],
             ),
@@ -225,7 +225,7 @@ class _InventoryDetailsScreenState extends State<InventoryDetailsScreen> {
             RichText(
               text: TextSpan(
                 text: 'Supplier Name ',
-                style: TextStyles.regular_black(),
+                style: TextStyles.regularBlack(),
                 children: <TextSpan>[
                   TextSpan(text: widget.supplierName, style: TextStyles.bold()),
                 ],
@@ -234,14 +234,14 @@ class _InventoryDetailsScreenState extends State<InventoryDetailsScreen> {
             20.vs,
             Text(
               'Description',
-              style: TextStyles.regular_black(),
+              style: TextStyles.regularBlack(),
             ),
             20.vs,
             Column(
               children: [
                 Text(
                   widget.description,
-                  style: TextStyles.regular_black(),
+                  style: TextStyles.regularBlack(),
                 ),
               ],
             )

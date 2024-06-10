@@ -43,12 +43,16 @@ class _OrdersScreenState extends State<OrdersScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        leading: IconButton(
-            onPressed: () {}, icon: const Icon(Icons.arrow_back_ios)),
+        leading: SvgPicture.asset(
+          ImageConstants.drawer,
+          fit: BoxFit.scaleDown,
+        ).onTap(
+          () => {},
+        ),
         backgroundColor: Colors.white,
         title: Text(
           'Orders',
-          style: TextStyles.regular_black(fontSize: 16),
+          style: TextStyles.regularBlack(fontSize: 16),
         ),
         actions: [
           GestureDetector(
@@ -64,8 +68,8 @@ class _OrdersScreenState extends State<OrdersScreen> {
                 color: Colors.white,
               ),
             ).allp(5),
-            onTap: () {
-              Navigator.push(context,
+            onTap: () async {
+              await Navigator.push(context,
                   MaterialPageRoute(builder: (context) => NewOrderScreen()));
             },
           ),

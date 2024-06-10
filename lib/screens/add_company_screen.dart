@@ -42,23 +42,23 @@ class _AddCompanyScreenState extends State<AddCompanyScreen> {
             child: Column(
               mainAxisSize: MainAxisSize.max,
               children: [
+                101.vs,
                 buildImageView(),
+                34.vs,
                 Text(
                   'Add Comapny',
                   style: TextStyles.bold(fontSize: 24, color: Colors.white),
                 ),
-                45.vs,
-                Padding(
-                  padding: EdgeInsets.only(left: 25, right: 25),
-                  child: Container(
-                      decoration: BoxDecoration(
-                        border: Border.all(
-                            color: ColorConstants.darkGrey, width: 1),
-                        borderRadius: BorderRadius.circular(10),
-                        color: Colors.white,
-                      ),
-                      child: buildForm()),
-                ),
+                1.vs,
+                Container(
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                              color: ColorConstants.darkGrey, width: 1),
+                          borderRadius: BorderRadius.circular(10),
+                          color: Colors.white,
+                        ),
+                        child: buildForm())
+                    .allp(24),
               ],
             ),
           ),
@@ -83,110 +83,102 @@ class _AddCompanyScreenState extends State<AddCompanyScreen> {
   }
 
   Widget buildForm() {
-    return Padding(
-        padding: EdgeInsets.all(20),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            children: [
-              Container(
-                child: Column(
-                  children: [
-                    InkWell(
-                      onTap: () {
-                        _getImage();
-                      },
-                      child: Stack(
-                        children: [
-                          CircleAvatar(
-                            radius: 52,
-                            backgroundColor: ColorConstants.lightGrey,
-                            backgroundImage: imageXFile == null
-                                ? null
-                                : FileImage(
-                                    File(imageXFile!.path),
-                                  ),
-                            child: imageXFile == null
-                                ? SvgPicture.asset(ImageConstants.gallery)
-                                : null,
-                          ),
-                          Positioned(
-                            left: MediaQuery.of(context).size.width * 0.18,
-                            top: MediaQuery.of(context).size.width * 0.18,
-                            child: const CircleAvatar(
-                                radius: 15,
-                                backgroundColor: Color(0xffEEEEEE),
-                                child: Icon(
-                                  Icons.photo_camera,
-                                  color: Colors.black,
-                                )),
-                          )
-                        ],
+    return Form(
+      key: _formKey,
+      child: Column(
+        children: [
+          Container(
+            child: Column(
+              children: [
+                InkWell(
+                  onTap: () {
+                    _getImage();
+                  },
+                  child: Stack(
+                    children: [
+                      CircleAvatar(
+                        radius: 52,
+                        backgroundColor: ColorConstants.lightGrey,
+                        backgroundImage: imageXFile == null
+                            ? null
+                            : FileImage(
+                                File(imageXFile!.path),
+                              ),
+                        child: imageXFile == null
+                            ? SvgPicture.asset(ImageConstants.gallery)
+                            : null,
                       ),
-                    ),
-                    Text(
-                      'Company Image',
-                      style: TextStyles.regular(
-                          fontSize: 10, color: ColorConstants.lightGrey),
-                    )
-                  ],
+                      Positioned(
+                        left: MediaQuery.of(context).size.width * 0.18,
+                        top: MediaQuery.of(context).size.width * 0.18,
+                        child: const CircleAvatar(
+                            radius: 15,
+                            backgroundColor: Color(0xffEEEEEE),
+                            child: Icon(
+                              Icons.photo_camera,
+                              color: Colors.black,
+                            )),
+                      )
+                    ],
+                  ),
                 ),
-              ),
-              20.vs,
-              AppTextFormFields(
-                hint: 'Company Name',
-                controller: comapny_nameController,
-                validator: (value) {
-                  Validators().isValidateField(value);
-                },
-              ),
-              20.vs,
-              AppTextFormFields(
-                hint: 'Email ID ',
-                controller: emailController,
-                validator: (value) {
-                  Validators().validateEmail(value);
-                },
-              ),
-              20.vs,
-              AppTextFormFields(
-                hint: 'Comapny Address',
-                controller: comapny_addressController,
-                validator: (value) {
-                  Validators().isValidateField(value);
-                },
-              ),
-              20.vs,
-              AppButton(
-                labelText: 'Save',
-                onTap: () {},
-                color: ColorConstants.darkGrey,
-              ),
-              20.vs,
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  TextButton(
-                      onPressed: () {},
-                      child: Text(
-                        'Remind me later',
-                        style: TextStyles.bold(color: ColorConstants.darkGrey),
-                      ))
-                ],
-              )
-            ],
+                7.vs,
+                Text(
+                  'Company Image',
+                  style: TextStyles.small(),
+                )
+              ],
+            ),
           ),
-        ));
+          24.vs,
+          AppTextFormFields(
+            hint: 'Company Name',
+            controller: comapny_nameController,
+            validator: (value) {
+              Validators().isValidateField(value);
+            },
+          ),
+          16.vs,
+          AppTextFormFields(
+            hint: 'Email ID ',
+            controller: emailController,
+            validator: (value) {
+              Validators().validateEmail(value);
+            },
+          ),
+          16.vs,
+          AppTextFormFields(
+            hint: 'Comapny Address',
+            controller: comapny_addressController,
+            validator: (value) {
+              Validators().isValidateField(value);
+            },
+          ),
+          24.vs,
+          AppButton(
+            labelText: 'Save',
+            onTap: () {},
+            color: ColorConstants.darkGrey,
+          ),
+          24.vs,
+          TextButton(
+              onPressed: () {},
+              child: Text(
+                'Remind me later',
+                style: TextStyles.bold(),
+              ))
+        ],
+      ),
+    ).allp(24);
   }
 }
 
 Widget buildImageView() {
   return Container(
       alignment: Alignment.bottomCenter,
-      padding: EdgeInsets.all(70),
       child: SvgPicture.asset(
         ImageConstants.appLogo,
         height: 74,
         width: 228,
-      ));
+      )).hp(73);
 }

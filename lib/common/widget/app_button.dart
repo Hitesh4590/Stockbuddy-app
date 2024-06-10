@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:stockbuddy_flutter_app/common/theme/text_styles.dart';
 import 'package:stockbuddy_flutter_app/common/widget/rounded_loading_button.dart';
-
 import '../theme/color_constants.dart';
 
 class AppButton extends StatelessWidget {
@@ -43,7 +42,7 @@ class AppButton extends StatelessWidget {
       onPressed: onTap,
       height: buttonHeight,
       width: buttonWidth ?? MediaQuery.of(context).size.width,
-      borderRadius: 4,
+      borderRadius: 10,
       color: color,
       elevation: 0,
       borderColor: borderColor,

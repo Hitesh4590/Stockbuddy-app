@@ -33,7 +33,6 @@ class _SignInScreenState extends State<SignInScreen> {
   Widget build(BuildContext context) {
     var toggle = context.watch<ToggleProvider>();
     return Scaffold(
-      // backgroundColor: ColorConstants.darkGrey,
       body: Stack(
         children: [
           Column(
@@ -52,182 +51,177 @@ class _SignInScreenState extends State<SignInScreen> {
             child: Column(
               mainAxisSize: MainAxisSize.max,
               children: [
+                101.vs,
                 buildImageView(),
+                34.vs,
                 Text(
                   'Welcome Back',
                   style: TextStyles.bold(fontSize: 24, color: Colors.white),
                 ),
+                5.vs,
                 Text(
                   'Enter your credentials to sign in',
-                  style: TextStyles.medium(color: Colors.white, fontSize: 10),
+                  style: TextStyles.small(color: Colors.white),
                 ),
-                45.vs,
-                Padding(
-                  padding: EdgeInsets.only(left: 25, right: 25),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      border:
-                          Border.all(color: ColorConstants.darkGrey, width: 1),
-                      borderRadius: BorderRadius.circular(10),
-                      color: Colors.white,
-                    ),
-                    child: Padding(
-                      padding: EdgeInsets.all(20),
-                      child: Form(
-                        key: _formKey,
-                        child: Column(
+                25.vs,
+                Container(
+                  decoration: BoxDecoration(
+                    border:
+                        Border.all(color: ColorConstants.darkGrey, width: 1),
+                    borderRadius: BorderRadius.circular(10),
+                    color: Colors.white,
+                  ),
+                  child: Form(
+                    key: _formKey,
+                    child: Column(
+                      children: [
+                        AppTextFormFields(
+                          hint: 'Email ID & Phone number',
+                          controller: emailController,
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Please enter an email address or phone no';
+                            } else if (RegExp(
+                                        r'^[\w-]+(\.[\w-]+)*@[\w-]+(\.[\w-]+)+$')
+                                    .hasMatch(value) ||
+                                Validators().isValidateMobileNo(value)) {
+                              return null;
+                            }
+                            return 'Please enter a valid email address or phone no'; // Return null if the input is valid
+                          },
+                        ),
+                        16.vs,
+                        AppTextFormFields(
+                          hint: 'Password',
+                          controller: passwordController,
+                          obscureText: toggle.signinObscure,
+                          suffixIcon: GestureDetector(
+                            onTap: () {
+                              toggle.toggleSigninObscure();
+                            },
+                            child: SvgPicture.asset(
+                              ImageConstants.passwordToggle,
+                              fit: BoxFit.scaleDown,
+                            ),
+                          ),
+                          validator: (value) {
+                            if (passwordController.text.isEmpty) {
+                              return 'Please enter password';
+                            } else if (!Validators().isValidPassword(value)) {
+                              return 'Please write 8 min character including one lower,upper and special character';
+                            }
+                            return null;
+                          },
+                        ),
+                        16.vs,
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            AppTextFormFields(
-                              hint: 'Email ID & Phone number',
-                              controller: emailController,
-                              validator: (value) {
-                                if (value == null || value.isEmpty) {
-                                  return 'Please enter an email address or phone no';
-                                } else if (RegExp(
-                                            r'^[\w-]+(\.[\w-]+)*@[\w-]+(\.[\w-]+)+$')
-                                        .hasMatch(value) ||
-                                    Validators().isValidateMobileNo(value)) {
-                                  return null;
-                                }
-                                return 'Please enter a valid email address or phone no'; // Return null if the input is valid
+                            Checkbox(
+                              value: toggle.rememberMe,
+                              onChanged: (value) {
+                                toggle.toggleRememberMe();
                               },
                             ),
-                            20.vs,
-                            AppTextFormFields(
-                              hint: 'Password',
-                              controller: passwordController,
-                              obscureText: toggle.signinObscure,
-                              suffixIcon: GestureDetector(
-                                onTap: () {
-                                  toggle.toggleSigninObscure();
-                                },
-                                child: SvgPicture.asset(
-                                  ImageConstants.passwordToggle,
-                                  fit: BoxFit.scaleDown,
-                                ),
-                              ),
-                              validator: (value) {
-                                if (passwordController.text.isEmpty) {
-                                  return 'Please enter password';
-                                } else if (!Validators()
-                                    .isValidPassword(value)) {
-                                  return 'Please write 8 min character including one lower,upper and special character';
-                                }
-                                return null;
-                              },
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Checkbox(
-                                  value: toggle.rememberMe,
-                                  onChanged: (value) {
-                                    toggle.toggleRememberMe();
-                                  },
-                                ),
-                                const Text('Remember me'),
-                                20.hs,
-                                Expanded(
-                                  child: TextButton(
-                                      onPressed: () {
-                                        Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (c) =>
-                                                    ForgotPasswordScreen()));
-                                      },
-                                      child: Text(
-                                        'Forgot Password?',
-                                        style: TextStyles.bold(),
-                                      )),
-                                )
-                              ],
-                            ),
-                            20.vs,
-                            AppButton(
-                              labelText: 'Sign in',
-                              onTap: () async {
-                                if (_formKey.currentState!.validate()) {
-                                  if (await DatabaseService().login(
-                                      emailController.text.trim(),
-                                      passwordController.text.trim())) {
+                            const Text('Remember me'),
+                            20.hs,
+                            Expanded(
+                              child: TextButton(
+                                  onPressed: () {
                                     Navigator.push(
                                         context,
                                         MaterialPageRoute(
-                                            builder: (c) => DashBoardScreen()));
-                                  }
-                                }
-                              },
-                              color: ColorConstants.darkGrey,
-                            ),
-                            20.vs,
-                            const Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text('-----------Or Login with----------')
-                              ],
-                            ),
-                            20.vs,
-                            GestureDetector(
-                                child: Container(
-                                    width: double.infinity,
-                                    height: 48,
-                                    decoration: BoxDecoration(
-                                      border: Border.all(
-                                          color: ColorConstants.darkGrey,
-                                          width: 1),
-                                      color: Colors.white,
-                                      borderRadius: BorderRadius.circular(5),
+                                            builder: (c) =>
+                                                ForgotPasswordScreen()));
+                                  },
+                                  child: Text(
+                                    'Forgot Password?',
+                                    style: TextStyles.bold(),
+                                  )),
+                            )
+                          ],
+                        ),
+                        24.vs,
+                        AppButton(
+                          labelText: 'Sign in',
+                          onTap: () async {
+                            if (_formKey.currentState!.validate()) {
+                              if (await DatabaseService().login(
+                                  emailController.text.trim(),
+                                  passwordController.text.trim())) {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (c) => DashBoardScreen()));
+                              }
+                            }
+                          },
+                          color: ColorConstants.darkGrey,
+                        ),
+                        24.vs,
+                        const Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text('-----------Or Login with----------')
+                          ],
+                        ),
+                        24.vs,
+                        GestureDetector(
+                            child: Container(
+                                width: double.infinity,
+                                height: 48,
+                                decoration: BoxDecoration(
+                                  border: Border.all(
+                                      color: ColorConstants.darkGrey, width: 1),
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(5),
+                                ),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    SvgPicture.asset(
+                                      ImageConstants.google,
+                                      fit: BoxFit.contain,
                                     ),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        SvgPicture.asset(
-                                          ImageConstants.google,
-                                          fit: BoxFit.contain,
-                                        ),
-                                        10.hs,
-                                        Text(
-                                          'Continue with google',
-                                          style: TextStyles.bold(fontSize: 14),
-                                        ),
-                                      ],
-                                    )),
-                                onTap: () {
+                                    10.hs,
+                                    Text(
+                                      'Continue with google',
+                                      style: TextStyles.bold(fontSize: 14),
+                                    ),
+                                  ],
+                                )),
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (c) => SignUpScreen()));
+                            }),
+                        24.vs,
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              "Don't have an account?",
+                              style: TextStyles.regular(),
+                            ),
+                            TextButton(
+                                onPressed: () {
                                   Navigator.push(
                                       context,
                                       MaterialPageRoute(
                                           builder: (c) => SignUpScreen()));
-                                }),
-                            20.vs,
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text(
-                                  "Don't have an account?",
-                                  style: TextStyles.regular(),
-                                ),
-                                TextButton(
-                                    onPressed: () {
-                                      Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (c) => SignUpScreen()));
-                                    },
-                                    child: Text(
-                                      "Sign Up",
-                                      style: TextStyles.bold(
-                                          color: ColorConstants.darkGrey),
-                                    ))
-                              ],
-                            )
+                                },
+                                child: Text(
+                                  "Sign Up",
+                                  style: TextStyles.bold(
+                                      color: ColorConstants.darkGrey),
+                                ))
                           ],
-                        ),
-                      ),
+                        )
+                      ],
                     ),
-                  ),
-                ),
+                  ).allp(24),
+                ).hp(24),
               ],
             ),
           ),
@@ -239,7 +233,7 @@ class _SignInScreenState extends State<SignInScreen> {
   Widget buildImageView() {
     return Container(
       alignment: Alignment.bottomCenter,
-      padding: const EdgeInsets.all(70),
+      padding: const EdgeInsets.symmetric(horizontal: 73),
       child: SvgPicture.asset(
         ImageConstants.appLogo,
         height: 74,

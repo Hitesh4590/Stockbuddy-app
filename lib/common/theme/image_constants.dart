@@ -26,4 +26,7 @@ class ImageConstants {
   static const String externalLink = 'assets/i18n/external-link.svg';
   static const String cancelImage = 'assets/i18n/cancel_image.svg';
   static const String uploadImage = 'assets/i18n/upload_image.svg';
+  static const String edit2 = 'assets/i18n/edit-2.svg';
+  static const String trash2 = 'assets/i18n/trash-2.svg';
+  static const String drawer = 'assets/i18n/drawer.svg';
 }

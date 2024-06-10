@@ -111,11 +111,11 @@ class InventoryListTile extends StatelessWidget {
                         ),
                         Text(
                           'Qty: $quantity',
-                          style: TextStyles.regular_black(),
+                          style: TextStyles.regularBlack(),
                         ),
                         Text(
                           'Type: $type',
-                          style: TextStyles.regular_black(),
+                          style: TextStyles.regularBlack(),
                         ),
                       ],
                     ),

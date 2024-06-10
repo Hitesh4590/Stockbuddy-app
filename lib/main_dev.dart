@@ -4,13 +4,12 @@ import 'package:i18n_extension/i18n_extension.dart';
 import 'package:provider/provider.dart';
 import 'package:stockbuddy_flutter_app/common/theme/app_theme.dart';
 import 'package:stockbuddy_flutter_app/providers/add_inventory_provider.dart';
+import 'package:stockbuddy_flutter_app/providers/channel_provider.dart';
 import 'package:stockbuddy_flutter_app/providers/home_screen_provider.dart';
 import 'package:stockbuddy_flutter_app/providers/inventory_details_provider.dart';
 import 'package:stockbuddy_flutter_app/providers/inventory_list_provider.dart';
 import 'package:stockbuddy_flutter_app/providers/orders_screen_provider.dart';
 import 'package:stockbuddy_flutter_app/providers/toggle_provider.dart';
-import 'package:stockbuddy_flutter_app/screens/inventory_list_screen.dart';
-import 'package:stockbuddy_flutter_app/screens/sign_in_screen.dart';
 import 'package:stockbuddy_flutter_app/services/auth_checker.dart';
 
 import 'firebase_options.dart';
@@ -40,6 +39,9 @@ Future<void> main() async {
       ChangeNotifierProvider(
         create: (context) => OrdersScreenProvider(),
       ),
+      ChangeNotifierProvider(
+        create: (context) => ChannelProvider(),
+      ),
     ],
     child: const App(),
   ));
@@ -51,10 +53,15 @@ class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return I18n(
-      child: MaterialApp(
-        title: 'stockbuddy',
-        theme: AppTheme().getAppTheme(context),
-        home: AuthChecker(),
+      child: GestureDetector(
+        onTap: () {
+          FocusManager.instance.primaryFocus?.unfocus();
+        },
+        child: MaterialApp(
+          title: 'stockbuddy',
+          theme: AppTheme().getAppTheme(context),
+          home: AuthChecker(),
+        ),
       ),
     );
   }

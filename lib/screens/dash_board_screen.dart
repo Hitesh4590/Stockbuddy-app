@@ -11,6 +11,7 @@ import 'package:stockbuddy_flutter_app/screens/home_screen.dart';
 import 'package:stockbuddy_flutter_app/screens/inventory_details_screen.dart';
 import 'package:stockbuddy_flutter_app/screens/inventory_list_screen.dart';
 import 'package:stockbuddy_flutter_app/screens/orders_screen.dart';
+import 'package:stockbuddy_flutter_app/common/widget/channel_tile.dart';
 
 import '../common/theme/image_constants.dart';
 
@@ -28,6 +29,8 @@ class DashBoardScreen extends StatelessWidget {
     return Scaffold(
       body: pages[provider.selectedScreen],
       bottomNavigationBar: ConvexAppBar(
+        elevation: 14,
+        shadowColor: Colors.black.withOpacity(0.25),
         height: 70,
         backgroundColor: Colors.white,
         color: Colors.black,
@@ -35,10 +38,12 @@ class DashBoardScreen extends StatelessWidget {
         style: TabStyle.fixedCircle,
         items: [
           TabItem(
+              title: provider.selectedScreen == 0 ? 'Home' : '',
               icon: provider.selectedScreen == 0
                   ? SvgPicture.asset(ImageConstants.homeSelected)
                   : SvgPicture.asset(ImageConstants.home)),
           TabItem(
+              title: provider.selectedScreen == 1 ? 'Order' : '',
               icon: provider.selectedScreen == 1
                   ? SvgPicture.asset(ImageConstants.orderSelected)
                   : SvgPicture.asset(ImageConstants.order)),
@@ -48,10 +53,12 @@ class DashBoardScreen extends StatelessWidget {
             fit: BoxFit.scaleDown,
           )),
           TabItem(
+              title: provider.selectedScreen == 3 ? 'Channel' : '',
               icon: provider.selectedScreen == 3
                   ? SvgPicture.asset(ImageConstants.channelSelected)
                   : SvgPicture.asset(ImageConstants.channel)),
           TabItem(
+              title: provider.selectedScreen == 4 ? 'Profile' : '',
               icon: provider.selectedScreen == 4
                   ? SvgPicture.asset(ImageConstants.profileSelected)
                   : SvgPicture.asset(ImageConstants.profile)),

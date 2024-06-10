@@ -3,7 +3,6 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:stockbuddy_flutter_app/common/extension.dart';
 import 'package:stockbuddy_flutter_app/common/theme/image_constants.dart';
 import 'package:stockbuddy_flutter_app/common/widget/app_textfield.dart';
-
 import '../common/theme/color_constants.dart';
 import '../common/theme/text_styles.dart';
 import '../common/util/validators.dart';
@@ -26,11 +25,14 @@ class _NewOrderScreenState extends State<NewOrderScreen> {
       backgroundColor: Colors.white,
       appBar: AppBar(
         leading: IconButton(
-            onPressed: () {}, icon: const Icon(Icons.arrow_back_ios)),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            icon: const Icon(Icons.arrow_back_ios)),
         backgroundColor: Colors.white,
         title: Text(
           'New Order',
-          style: TextStyles.regular_black(fontSize: 16),
+          style: TextStyles.regularBlack(fontSize: 16),
         ),
       ),
       body: SingleChildScrollView(

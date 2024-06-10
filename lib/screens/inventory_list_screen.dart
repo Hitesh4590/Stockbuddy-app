@@ -54,12 +54,16 @@ class _InventoryListScreenState extends State<InventoryListScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        leading: IconButton(
-            onPressed: () {}, icon: const Icon(Icons.arrow_back_ios)),
+        leading: SvgPicture.asset(
+          ImageConstants.drawer,
+          fit: BoxFit.scaleDown,
+        ).onTap(
+          () => {},
+        ),
         backgroundColor: Colors.white,
         title: Text(
           'Inventory',
-          style: TextStyles.regular_black(fontSize: 16),
+          style: TextStyles.regularBlack(fontSize: 16),
         ),
         actions: [
           GestureDetector(
@@ -75,11 +79,12 @@ class _InventoryListScreenState extends State<InventoryListScreen> {
                 color: Colors.white,
               ),
             ).allp(5),
-            onTap: () {
-              Navigator.push(
+            onTap: () async {
+              await Navigator.push(
                   context,
                   MaterialPageRoute(
                       builder: (context) => AddInventoryScreen()));
+              provider.fetchInventory();
             },
           ),
         ],
@@ -87,6 +92,7 @@ class _InventoryListScreenState extends State<InventoryListScreen> {
       body: SingleChildScrollView(
         child: Column(
           children: [
+            5.vs,
             Row(
               children: [
                 Expanded(
@@ -142,7 +148,7 @@ class _InventoryListScreenState extends State<InventoryListScreen> {
                 ),
               ],
             ),
-            20.vs,
+            18.vs,
             ListView.builder(
               physics: NeverScrollableScrollPhysics(),
               shrinkWrap: true,
@@ -150,7 +156,7 @@ class _InventoryListScreenState extends State<InventoryListScreen> {
               itemBuilder: (context, index) {
                 InventoryItem item = provider.inventory[index];
                 return Padding(
-                  padding: const EdgeInsets.only(bottom: 10),
+                  padding: const EdgeInsets.only(bottom: 16),
                   child: GestureDetector(
                     onTap: () {
                       Navigator.push(
@@ -180,7 +186,7 @@ class _InventoryListScreenState extends State<InventoryListScreen> {
               },
             ),
           ],
-        ).allp(20),
+        ).allp(16),
       ),
     );
   }
