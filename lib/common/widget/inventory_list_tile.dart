@@ -5,14 +5,14 @@ import 'package:stockbuddy_flutter_app/common/theme/color_constants.dart';
 import '../theme/text_styles.dart';
 
 class InventoryListTile extends StatelessWidget {
-  final String sku;
+  final int id;
   final String image;
   final String title;
   final int quantity;
   final String type;
   final double price;
   InventoryListTile({
-    required this.sku,
+    required this.id,
     required this.image,
     required this.title,
     required this.quantity,
@@ -35,7 +35,7 @@ class InventoryListTile extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  'SKU NO:$sku',
+                  'SKU NO:$id',
                   style: TextStyles.bold(),
                 ),
                 if (quantity > 0)

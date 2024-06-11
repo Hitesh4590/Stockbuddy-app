@@ -10,11 +10,12 @@ import 'package:stockbuddy_flutter_app/common/widget/app_textfield.dart';
 import 'package:stockbuddy_flutter_app/common/widget/color_selection.dart';
 import 'package:stockbuddy_flutter_app/common/widget/upload_image_widget.dart';
 import 'package:stockbuddy_flutter_app/local_packages/dropdown_textfield-master/lib/dropdown_textfield.dart';
-import 'package:stockbuddy_flutter_app/model/inventory.dart';
 import 'package:stockbuddy_flutter_app/providers/add_inventory_provider.dart';
 import 'package:stockbuddy_flutter_app/screens/database_service.dart';
 import '../common/theme/color_constants.dart' as color;
 import '../common/theme/text_styles.dart';
+import '../model/products.dart';
+import '../model/sku.dart';
 
 class AddInventoryScreen extends StatefulWidget {
   const AddInventoryScreen({super.key});
@@ -25,7 +26,7 @@ class AddInventoryScreen extends StatefulWidget {
 
 class _AddInventoryScreenState extends State<AddInventoryScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  TextEditingController skuController = TextEditingController();
+
   TextEditingController titleController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
   TextEditingController typeController = TextEditingController();
@@ -35,6 +36,7 @@ class _AddInventoryScreenState extends State<AddInventoryScreen> {
   TextEditingController quantityController = TextEditingController();
   TextEditingController sellingPriceController = TextEditingController();
   TextEditingController purchasePriceController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     final provider = context.watch<AddInventoryProvider>();
@@ -66,7 +68,7 @@ class _AddInventoryScreenState extends State<AddInventoryScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    Row(
+                    /* Row(
                       children: [
                         Expanded(
                           child: AppTextFormFields(
@@ -96,7 +98,7 @@ class _AddInventoryScreenState extends State<AddInventoryScreen> {
                         ),
                       ],
                     ),
-                    20.vs,
+                    20.vs,*/
                     AppTextFormFields(
                       hint: 'Title',
                       controller: titleController,
@@ -330,58 +332,111 @@ class _AddInventoryScreenState extends State<AddInventoryScreen> {
 
                   if (_formKey.currentState!.validate() &&
                       provider.errorText == '') {
-                    List<String> color = [];
+                    String color = '';
                     switch (provider.selectedColor) {
                       case 0:
-                        color.clear();
-                        color.add('red');
+                        color = 'red';
                         break;
                       case 1:
-                        color.clear();
-                        color.add('grey');
+                        color = 'grey';
                         break;
                       case 2:
-                        color.clear();
-                        color.add('yellow');
+                        color = 'yellow';
                         break;
                       case 3:
-                        color.clear();
-                        color.add('blue');
+                        color = 'blue';
                         break;
                       case 4:
-                        color.clear();
-                        color.add('orange');
+                        color = 'orange';
                         break;
                     }
 
                     List<String> photos =
                         await DatabaseService().uploadImages(images);
-                    int quantity = int.parse(quantityController.text.trim());
+                    int _quantity = int.parse(quantityController.text);
+                    double buyPrice =
+                        double.parse(purchasePriceController.text);
                     double sellPrice =
-                        double.parse(sellingPriceController.text.trim());
-                    double purchasePrice =
-                        double.parse(purchasePriceController.text.trim());
-                    double sellPricePerUnit = sellPrice / quantity;
-                    double profitPerUnit =
-                        sellPricePerUnit - (purchasePrice / quantity);
-                    final inventory = InventoryItem(
-                        id: '',
-                        buyPrice: double.parse(purchasePriceController.text),
-                        colors: color,
-                        date: DateTime.now().toString(),
+                        double.parse(sellingPriceController.text);
+                    final existingProduct = await provider
+                        .getProductByTitle(titleController.text.trim());
+
+                    if (existingProduct != null) {
+                      int newProductDetailId = await provider
+                              .getTotalProductDetails(existingProduct.id!) +
+                          1;
+                      final newProductDetails = ProductDetails(
+                        id: newProductDetailId,
                         description: descriptionController.text,
-                        photos: photos,
-                        profitPerUnit: profitPerUnit,
-                        quantity: quantity,
+                        productId: existingProduct.id,
+                        color: color,
+                        available: _quantity,
+                        quantity: _quantity,
+                        sold: 0,
+                        buyPrice: buyPrice,
                         sellPrice: sellPrice,
-                        sellPricePerUnit: sellPricePerUnit,
-                        size: sizeController.dropDownValue?.name ?? "",
-                        skuNo: skuController.text,
-                        supplierName: supplierController.text,
-                        title: titleController.text,
-                        type: typeController.text);
-                    await DatabaseService().addInventory(inventory);
-                    Navigator.pop(context);
+                        photos: photos,
+                        size: sizeController.dropDownValue?.value.toString(),
+                        supplierName: supplierController.text.trim(),
+                      );
+                      existingProduct.inStock =
+                          (existingProduct.inStock! + _quantity).toInt();
+                      final sku = Sku(
+                        productId: existingProduct.id!,
+                        productDetailId: newProductDetailId,
+                        sellDate: '',
+                        status: 'available',
+                        sellingPrice: sellPrice,
+                        buyingPrice: buyPrice,
+                        color: color,
+                        size: sizeController.dropDownValue!.value.toString(),
+                      );
+                      await provider.addProductDetails(
+                          existingProduct, newProductDetails);
+                      await provider.addSku(sku, _quantity);
+                      await provider.clearImageList();
+                      Navigator.pop(context);
+                    } else {
+                      int newProductId = await provider.getTotalProducts() + 1;
+                      final newProduct = Product(
+                          id: newProductId,
+                          date: DateTime.now().toString(),
+                          inStock: _quantity,
+                          title: titleController.text.trim(),
+                          type: typeController.text.trim(),
+                          productDetails: [
+                            ProductDetails(
+                              productId: newProductId,
+                              description: descriptionController.text,
+                              id: 1,
+                              color: color,
+                              available: _quantity,
+                              quantity: _quantity,
+                              sold: 0,
+                              buyPrice: buyPrice,
+                              sellPrice: sellPrice,
+                              photos: photos,
+                              size: sizeController.dropDownValue?.value
+                                  .toString(),
+                              supplierName: supplierController.text.trim(),
+                            )
+                          ]);
+                      final sku = Sku(
+                        productId: newProductId,
+                        productDetailId: 1,
+                        buyingPrice: buyPrice,
+                        sellingPrice: sellPrice,
+                        status: 'available',
+                        sellDate: '',
+                        color: color,
+                        size: sizeController.dropDownValue!.value.toString(),
+                      );
+
+                      await provider.addProduct(newProduct);
+                      await provider.addSku(sku, _quantity);
+                      await provider.clearImageList();
+                      Navigator.pop(context);
+                    }
                   }
                 }),
           ],

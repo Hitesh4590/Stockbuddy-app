@@ -21,7 +21,7 @@ class InventoryDetailsScreen extends StatefulWidget {
     required this.supplierName,
     required this.quantity,
   });
-  final String skuNo;
+  final int skuNo;
   final String title;
   final String type;
   final double sellingPrice;

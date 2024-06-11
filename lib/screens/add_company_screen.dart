@@ -7,6 +7,7 @@ import 'package:stockbuddy_flutter_app/common/theme/image_constants.dart';
 import 'package:stockbuddy_flutter_app/common/theme/text_styles.dart';
 import 'package:stockbuddy_flutter_app/common/widget/app_button.dart';
 import 'package:stockbuddy_flutter_app/common/widget/app_textfield.dart';
+import 'package:stockbuddy_flutter_app/model/products.dart';
 import '../common/theme/color_constants.dart';
 import '../common/util/validators.dart';
 

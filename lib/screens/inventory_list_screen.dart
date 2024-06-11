@@ -5,13 +5,13 @@ import 'package:stockbuddy_flutter_app/common/extension.dart';
 import 'package:stockbuddy_flutter_app/common/theme/image_constants.dart';
 import 'package:stockbuddy_flutter_app/common/widget/app_textfield.dart';
 import 'package:stockbuddy_flutter_app/common/widget/inventory_list_tile.dart';
-import 'package:stockbuddy_flutter_app/model/inventory.dart';
 import 'package:stockbuddy_flutter_app/providers/inventory_list_provider.dart';
 import 'package:stockbuddy_flutter_app/screens/add_inventory_screen.dart';
 import 'package:stockbuddy_flutter_app/screens/inventory_details_screen.dart';
 import '../common/theme/color_constants.dart';
 import '../common/theme/text_styles.dart';
 import '../common/widget/border_button.dart';
+import '../model/Products.dart';
 
 class InventoryListScreen extends StatefulWidget {
   const InventoryListScreen({super.key});
@@ -154,7 +154,7 @@ class _InventoryListScreenState extends State<InventoryListScreen> {
               shrinkWrap: true,
               itemCount: provider.inventory.length,
               itemBuilder: (context, index) {
-                InventoryItem item = provider.inventory[index];
+                Product item = provider.inventory[index] as Product;
                 return Padding(
                   padding: const EdgeInsets.only(bottom: 16),
                   child: GestureDetector(
@@ -163,24 +163,32 @@ class _InventoryListScreenState extends State<InventoryListScreen> {
                           context,
                           MaterialPageRoute(
                               builder: (context) => InventoryDetailsScreen(
-                                    skuNo: item.skuNo,
-                                    title: item.title,
-                                    type: item.type,
-                                    sellingPrice: item.sellPrice,
-                                    purchasePrice: item.buyPrice,
-                                    description: item.description,
-                                    images: item.photos,
-                                    quantity: item.quantity,
-                                    supplierName: item.supplierName,
+                                    skuNo: item.id ?? 0,
+                                    title: item.title ?? '',
+                                    type: item.type ?? '',
+                                    sellingPrice:
+                                        item.productDetails?[0].sellPrice ?? 0,
+                                    purchasePrice:
+                                        item.productDetails?[0].buyPrice ?? 0,
+                                    description:
+                                        item.productDetails?[0].description ??
+                                            '',
+                                    images:
+                                        item.productDetails?[0].photos ?? [],
+                                    quantity:
+                                        item.productDetails?[0].available ?? 0,
+                                    supplierName:
+                                        item.productDetails?[0].supplierName ??
+                                            '',
                                   )));
                     },
                     child: InventoryListTile(
-                        sku: item.skuNo,
-                        image: item.photos[0],
-                        title: item.title,
-                        quantity: item.quantity,
-                        type: item.type,
-                        price: item.buyPrice),
+                        id: item.id ?? 0,
+                        image: item.productDetails?[0].photos?[0] ?? '',
+                        title: item.title ?? '',
+                        quantity: item.inStock ?? 0,
+                        type: item.type ?? '',
+                        price: item.productDetails?[0].sellPrice ?? 0),
                   ),
                 );
               },

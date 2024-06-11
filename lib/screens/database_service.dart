@@ -6,7 +6,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:stockbuddy_flutter_app/model/channel.dart';
-import 'package:stockbuddy_flutter_app/model/inventory.dart';
 import 'package:stockbuddy_flutter_app/model/user.dart';
 
 class DatabaseService {
@@ -112,20 +111,6 @@ class DatabaseService {
       return 'success';
     } catch (e) {
       return 'Error fetching user';
-    }
-  }
-
-  Future<String> addInventory(InventoryItem inventory) async {
-    try {
-      usersCollection
-          .doc(FirebaseAuth.instance.currentUser?.uid)
-          .collection('Inventory')
-          .doc()
-          .set(inventory.toMap())
-          .then((value) => print('Inventory item Added'));
-      return 'success';
-    } catch (e) {
-      return 'Error adding Inventory';
     }
   }
 

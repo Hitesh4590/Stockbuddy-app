@@ -3,7 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:stockbuddy_flutter_app/common/theme/image_constants.dart';
 import '../common/widget/custom_popup_menu_entry.dart';
-import '../model/inventory.dart';
+import '../model/Products.dart';
 
 class InventoryListProvider extends ChangeNotifier {
   String _selectedFilter = 'All';
@@ -34,8 +34,8 @@ class InventoryListProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  List<InventoryItem> _inventory = [];
-  List<InventoryItem> get inventory => _inventory;
+  List<Product> _inventory = [];
+  List<Product> get inventory => _inventory;
   final CollectionReference usersCollection =
       FirebaseFirestore.instance.collection('Users');
 
@@ -48,7 +48,7 @@ class InventoryListProvider extends ChangeNotifier {
               .collection('Inventory')
               .get();
           _inventory = querySnapshot.docs
-              .map((doc) => InventoryItem.fromDocument(doc))
+              .map((doc) => Product.fromDocument(doc))
               .toList();
           notifyListeners();
         } catch (e) {
@@ -60,10 +60,10 @@ class InventoryListProvider extends ChangeNotifier {
           QuerySnapshot querySnapshot = await usersCollection
               .doc(FirebaseAuth.instance.currentUser?.uid)
               .collection('Inventory')
-              .where('quantity', isGreaterThan: 0)
+              .where('inStock', isGreaterThan: 0)
               .get();
           _inventory = querySnapshot.docs
-              .map((doc) => InventoryItem.fromDocument(doc))
+              .map((doc) => Product.fromDocument(doc))
               .toList();
           notifyListeners();
         } catch (e) {
@@ -75,10 +75,10 @@ class InventoryListProvider extends ChangeNotifier {
           QuerySnapshot querySnapshot = await usersCollection
               .doc(FirebaseAuth.instance.currentUser?.uid)
               .collection('Inventory')
-              .where('quantity', isEqualTo: 0)
+              .where('inStock', isEqualTo: 0)
               .get();
           _inventory = querySnapshot.docs
-              .map((doc) => InventoryItem.fromDocument(doc))
+              .map((doc) => Product.fromDocument(doc))
               .toList();
           notifyListeners();
         } catch (e) {
@@ -101,7 +101,7 @@ class InventoryListProvider extends ChangeNotifier {
   Future<void> searchResult() async {
     await fetchInventory();
     _inventory = List.from(_inventory.where((item) {
-      return item.title.toLowerCase().contains(query.toLowerCase());
+      return item.title!.toLowerCase().contains(query.toLowerCase());
     }).toList());
     notifyListeners();
   }

@@ -5,7 +5,6 @@ import 'package:stockbuddy_flutter_app/common/theme/image_constants.dart';
 import 'package:stockbuddy_flutter_app/common/theme/text_styles.dart';
 import 'package:stockbuddy_flutter_app/common/widget/app_textfield.dart';
 import 'package:stockbuddy_flutter_app/common/widget/app_button.dart';
-import 'package:stockbuddy_flutter_app/screens/sign_in_screen.dart';
 
 import '../common/theme/color_constants.dart';
 
@@ -17,10 +16,10 @@ class ForgotPasswordScreen extends StatefulWidget {
 }
 
 class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
-  @override
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   TextEditingController emailController = TextEditingController();
 
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       // backgroundColor: ColorConstants.darkGrey,
@@ -54,8 +53,11 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                 ),
                 5.vs,
                 Text(
-                  '\t\t\t\t\t Enter the email address you’d like \t \n your password reset information sent to ',
-                  style: TextStyles.small(color: Colors.white),
+                  textAlign: TextAlign.center,
+                  'Enter the email address you’d like  \n your password reset information sent to ',
+                  style: TextStyles.small(
+                    color: Colors.white,
+                  ),
                 ),
                 1.vs,
                 Container(
@@ -99,7 +101,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                                   Navigator.pop(context);
                                 },
                                 child: Text(
-                                  "< Back To Login",
+                                  '< Back To Login',
                                   style: TextStyles.bold(),
                                 ))
                           ],
