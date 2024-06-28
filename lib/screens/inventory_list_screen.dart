@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import 'package:stockbuddy_flutter_app/common/extension.dart';
@@ -7,11 +8,12 @@ import 'package:stockbuddy_flutter_app/common/widget/app_textfield.dart';
 import 'package:stockbuddy_flutter_app/common/widget/inventory_list_tile.dart';
 import 'package:stockbuddy_flutter_app/providers/inventory_list_provider.dart';
 import 'package:stockbuddy_flutter_app/screens/add_inventory_screen.dart';
-import 'package:stockbuddy_flutter_app/screens/inventory_details_screen.dart';
+import 'package:stockbuddy_flutter_app/screens/edit_sku_screen.dart';
+import 'package:stockbuddy_flutter_app/screens/sku_screen.dart';
 import '../common/theme/color_constants.dart';
 import '../common/theme/text_styles.dart';
 import '../common/widget/border_button.dart';
-import '../model/Products.dart';
+import '../model/product.dart';
 
 class InventoryListScreen extends StatefulWidget {
   const InventoryListScreen({super.key});
@@ -54,41 +56,27 @@ class _InventoryListScreenState extends State<InventoryListScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        leading: SvgPicture.asset(
-          ImageConstants.drawer,
-          fit: BoxFit.scaleDown,
-        ).onTap(
-          () => {},
-        ),
-        backgroundColor: Colors.white,
-        title: Text(
-          'Inventory',
-          style: TextStyles.regularBlack(fontSize: 16),
-        ),
-        actions: [
-          GestureDetector(
-            child: Container(
-              height: 24,
-              width: 24,
-              decoration: BoxDecoration(
-                color: Colors.black,
-                borderRadius: BorderRadius.circular(5),
+          backgroundColor: Colors.white,
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'Inventory',
+                style: TextStyles.regularBlack(fontSize: 16),
               ),
-              child: const Icon(
-                Icons.add,
-                color: Colors.white,
-              ),
-            ).allp(5),
-            onTap: () async {
-              await Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => AddInventoryScreen()));
-              provider.fetchInventory();
-            },
-          ),
-        ],
-      ),
+              SizedBox(
+                height: 20,
+                width: 20,
+                child: SvgPicture.asset(ImageConstants.addButton),
+              ).onTap(() async {
+                await Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => AddInventoryScreen()));
+                provider.fetchInventory();
+              })
+            ],
+          )),
       body: SingleChildScrollView(
         child: Column(
           children: [
@@ -97,6 +85,7 @@ class _InventoryListScreenState extends State<InventoryListScreen> {
               children: [
                 Expanded(
                     child: AppTextFormFields(
+                  hint: 'Search Inventory',
                   onChanged: (value) {
                     provider.queryChanged(value);
                   },
@@ -149,50 +138,125 @@ class _InventoryListScreenState extends State<InventoryListScreen> {
               ],
             ),
             18.vs,
-            ListView.builder(
-              physics: NeverScrollableScrollPhysics(),
-              shrinkWrap: true,
-              itemCount: provider.inventory.length,
-              itemBuilder: (context, index) {
-                Product item = provider.inventory[index] as Product;
-                return Padding(
-                  padding: const EdgeInsets.only(bottom: 16),
-                  child: GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => InventoryDetailsScreen(
-                                    skuNo: item.id ?? 0,
-                                    title: item.title ?? '',
-                                    type: item.type ?? '',
-                                    sellingPrice:
-                                        item.productDetails?[0].sellPrice ?? 0,
-                                    purchasePrice:
-                                        item.productDetails?[0].buyPrice ?? 0,
-                                    description:
-                                        item.productDetails?[0].description ??
-                                            '',
-                                    images:
-                                        item.productDetails?[0].photos ?? [],
-                                    quantity:
-                                        item.productDetails?[0].available ?? 0,
-                                    supplierName:
-                                        item.productDetails?[0].supplierName ??
-                                            '',
-                                  )));
+            provider.productDetails.isNotEmpty
+                ? ListView.builder(
+                    physics: const NeverScrollableScrollPhysics(),
+                    shrinkWrap: true,
+                    itemCount: provider.productDetails.length,
+                    itemBuilder: (context, index) {
+                      final ProductDetail item = provider.productDetails[index];
+                      return Padding(
+                        padding: const EdgeInsets.only(bottom: 16),
+                        child: Slidable(
+                          endActionPane: ActionPane(
+                            extentRatio: 0.35,
+                            motion: const ScrollMotion(),
+                            children: [
+                              SizedBox(
+                                child: Builder(
+                                  builder: (context) {
+                                    return Row(
+                                      children: [
+                                        InkWell(
+                                          onTap: () async {
+                                            await Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        EditSkuScreen(
+                                                            detail: item)));
+                                            provider.fetchInventory();
+                                          },
+                                          splashColor: ColorConstants.darkGrey,
+                                          child: Container(
+                                            padding: EdgeInsets.zero,
+                                            decoration: const BoxDecoration(
+                                                color: ColorConstants.darkGrey),
+                                            child: Center(
+                                                child: SvgPicture.asset(
+                                              ImageConstants.edit2,
+                                              colorFilter:
+                                                  const ColorFilter.mode(
+                                                      ColorConstants.orange,
+                                                      BlendMode.srcIn),
+                                            ).hp(18).vp(20)),
+                                          ),
+                                        ),
+                                        InkWell(
+                                          onTap: () async {
+                                            int batchTotal = 0;
+                                            for (ProductBatch items
+                                                in item.batches) {
+                                              batchTotal += items.quantity;
+                                            }
+                                            if (item.inStock == batchTotal) {
+                                              await provider
+                                                  .deleteProductDetail(item);
+                                              ScaffoldMessenger.of(context)
+                                                  .showSnackBar(
+                                                const SnackBar(
+                                                  content: Text(
+                                                      'Deleted Successfully'),
+                                                  behavior:
+                                                      SnackBarBehavior.floating,
+                                                ),
+                                              );
+                                            } else {
+                                              ScaffoldMessenger.of(context)
+                                                  .showSnackBar(
+                                                const SnackBar(
+                                                  content: Text(
+                                                      'Cannot delete , items are sold from this sku'),
+                                                  behavior:
+                                                      SnackBarBehavior.floating,
+                                                ),
+                                              );
+                                            }
+                                          },
+                                          splashColor: ColorConstants.darkGrey,
+                                          child: Container(
+                                            padding: EdgeInsets.zero,
+                                            decoration: const BoxDecoration(
+                                                color: ColorConstants.orange),
+                                            child: Center(
+                                                child: SvgPicture.asset(
+                                              ImageConstants.trash2,
+                                              colorFilter:
+                                                  const ColorFilter.mode(
+                                                      ColorConstants.darkGrey,
+                                                      BlendMode.srcIn),
+                                              fit: BoxFit.scaleDown,
+                                            ).hp(18).vp(24)),
+                                          ),
+                                        ),
+                                      ],
+                                    );
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
+                          child: InventoryListTile(
+                            id: item.sku,
+                            image: (item.photos.isNotEmpty)
+                                ? item.photos[0]
+                                : ImageConstants.backgroundImage,
+                            title: item.title,
+                            quantity: item.inStock,
+                            type: item.type,
+                          ).onTap(() async {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        SkuScreen(productItem: item)));
+                            provider.fetchInventory();
+                          }),
+                        ),
+                      );
                     },
-                    child: InventoryListTile(
-                        id: item.id ?? 0,
-                        image: item.productDetails?[0].photos?[0] ?? '',
-                        title: item.title ?? '',
-                        quantity: item.inStock ?? 0,
-                        type: item.type ?? '',
-                        price: item.productDetails?[0].sellPrice ?? 0),
-                  ),
-                );
-              },
-            ),
+                  )
+                : const Center(child: Text(' No Data')),
           ],
         ).allp(16),
       ),

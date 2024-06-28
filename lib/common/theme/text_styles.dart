@@ -74,7 +74,7 @@ class TextStyles {
 
   static TextStyle medium({
     double fontSize = 14,
-    Color color = ColorConstants.darkGrey,
+    Color color = ColorConstants.lightGrey,
     TextDecoration? textDecoration,
     double? height,
     double? letterSpacing,

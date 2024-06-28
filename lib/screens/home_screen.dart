@@ -8,8 +8,7 @@ import 'package:stockbuddy_flutter_app/common/theme/image_constants.dart';
 import 'package:stockbuddy_flutter_app/common/widget/gridview_tile.dart';
 import 'package:stockbuddy_flutter_app/common/widget/radio_item_widget.dart';
 import 'package:stockbuddy_flutter_app/providers/home_screen_provider.dart';
-import 'package:stockbuddy_flutter_app/screens/database_service.dart';
-import 'package:stockbuddy_flutter_app/screens/sign_in_screen.dart';
+import 'package:stockbuddy_flutter_app/services/ad_service.dart';
 import '../common/theme/color_constants.dart';
 import '../common/theme/text_styles.dart';
 
@@ -21,22 +20,26 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  Color selected = Color(0xffff9501);
+  Color selected = const Color(0xffff9501);
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<HomeScreenProvider>().fetchChartData();
+      context.read<HomeScreenProvider>().fetchChannel();
+      context.read<HomeScreenProvider>().fetchStats();
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    final AdService adService = AdService();
     var home = context.watch<HomeScreenProvider>();
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         backgroundColor: Colors.white,
         elevation: 0,
         title: Text(
@@ -61,7 +64,7 @@ class _HomeScreenState extends State<HomeScreen> {
             SizedBox(
               height: 169,
               child: GridView.count(
-                physics: NeverScrollableScrollPhysics(),
+                physics: const NeverScrollableScrollPhysics(),
                 childAspectRatio: 2.32,
                 crossAxisCount: 2,
                 crossAxisSpacing: 10,
@@ -69,35 +72,35 @@ class _HomeScreenState extends State<HomeScreen> {
                 children: <Widget>[
                   GridviewTileWidget(
                     iconPath: ImageConstants.salesIcon,
-                    value: '452',
+                    value: home.todaySales.toString(),
                     labelText: 'Today Sales',
-                    color1: Color(0xffCEE3F6),
-                    color2: Color(0xffFBFCFF),
-                    borderColor: Color(0xffB9DCFB),
+                    color1: const Color(0xffCEE3F6),
+                    color2: const Color(0xffFBFCFF),
+                    borderColor: const Color(0xffB9DCFB),
                   ),
                   GridviewTileWidget(
-                    iconPath: ImageConstants.salesIcon,
+                    iconPath: ImageConstants.todayProfit,
                     value: '452',
                     labelText: 'Today Profit',
-                    color1: Color(0xffE2D3FF),
-                    color2: Color(0xffFBFCFF),
-                    borderColor: Color(0xffCEB4FF),
+                    color1: const Color(0xffE2D3FF),
+                    color2: const Color(0xffFBFCFF),
+                    borderColor: const Color(0xffCEB4FF),
                   ),
                   GridviewTileWidget(
-                    iconPath: ImageConstants.salesIcon,
+                    iconPath: ImageConstants.todayDue,
                     value: '452',
                     labelText: 'Today Due',
-                    color1: Color(0xffFFE9E3),
-                    color2: Color(0xffFBFCFF),
-                    borderColor: Color(0xffFFD5C9),
+                    color1: const Color(0xffFFE9E3),
+                    color2: const Color(0xffFBFCFF),
+                    borderColor: const Color(0xffFFD5C9),
                   ),
                   GridviewTileWidget(
-                    iconPath: ImageConstants.salesIcon,
-                    value: '452',
+                    iconPath: ImageConstants.todayExpense,
+                    value: home.todayExpense.toString(),
                     labelText: 'Today Expense',
-                    color1: Color(0xffDFF8B5),
-                    color2: Color(0xffFBFCFF),
-                    borderColor: Color(0xffDEFFA6),
+                    color1: const Color(0xffDFF8B5),
+                    color2: const Color(0xffFBFCFF),
+                    borderColor: const Color(0xffDEFFA6),
                   ),
                 ],
               ),
@@ -109,14 +112,15 @@ class _HomeScreenState extends State<HomeScreen> {
               decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(10),
-                  border: Border.all(width: 1, color: Colors.black)),
+                  border: Border.all(width: 1, color: ColorConstants.darkGrey)),
               child: Column(
                 children: [
                   Container(
                     decoration: BoxDecoration(
                         color: ColorConstants.darkGrey,
                         borderRadius: BorderRadius.circular(10),
-                        border: Border.all(width: 1, color: Colors.black)),
+                        border: Border.all(
+                            width: 1, color: ColorConstants.darkGrey)),
                     child: Row(
                       children: [
                         Container(
@@ -161,7 +165,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                           ],
                         ),
-                        Spacer(),
+                        const Spacer(),
                         Container(
                           height: 20,
                           width: 20,
@@ -183,19 +187,22 @@ class _HomeScreenState extends State<HomeScreen> {
                     children: [
                       Text(
                         'Revenue Comparison',
-                        style: TextStyles.regular(color: Colors.black),
+                        style: TextStyles.regularBlack(),
                       ),
                       Container(
-                        height: 35,
+                        height: 26,
                         decoration: BoxDecoration(
-                          border: Border.all(color: Colors.grey, width: 1),
+                          border: Border.all(
+                              color: ColorConstants.offWhite, width: 1),
                           borderRadius:
                               BorderRadius.circular(20), // circular border
                         ),
                         child: DropdownButton<String>(
+                          dropdownColor: ColorConstants.white,
                           value: home.dropdownValue,
-                          icon: const Icon(Icons.arrow_drop_down),
-                          style: const TextStyle(color: Colors.black),
+                          icon: SvgPicture.asset(ImageConstants.orangeArrow)
+                              .lp(5),
+                          style: TextStyles.regularBlack(),
                           underline: Container(),
                           onChanged: (String? value) {
                             home.handleDropDownValueChange(value!);
@@ -208,7 +215,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               child: Text(value),
                             );
                           }).toList(),
-                        ).allp(5),
+                        ).allp(4),
                       )
                     ],
                   ).hp(2),
@@ -225,6 +232,10 @@ class _HomeScreenState extends State<HomeScreen> {
                           onTap: () {
                             home.handleRadioValueChange(0);
                             home.fetchChartData();
+                            home.increment();
+                            if (home.count == 5) {
+                              adService.showInterstitialAd();
+                            }
                           }),
                       15.hs,
                       GestureDetector(
@@ -235,6 +246,10 @@ class _HomeScreenState extends State<HomeScreen> {
                           onTap: () {
                             home.handleRadioValueChange(1);
                             home.fetchChartData();
+                            home.increment();
+                            if (home.count == 5) {
+                              adService.showInterstitialAd();
+                            }
                           }),
                       15.hs,
                       GestureDetector(
@@ -245,10 +260,14 @@ class _HomeScreenState extends State<HomeScreen> {
                           onTap: () {
                             home.handleRadioValueChange(2);
                             home.fetchChartData();
+                            home.increment();
+                            if (home.count == 5) {
+                              adService.showInterstitialAd();
+                            }
                           }),
                     ],
                   ),
-                  12.vs,
+                  20.vs,
                   Expanded(
                     child: BarChart(
                       swapAnimationDuration: Duration.zero,
@@ -280,32 +299,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 ],
               ).allp(6),
             ),
-            20.vs,
-            Container(
-                height: 48,
-                width: 343,
-                decoration: BoxDecoration(
-                    color: Color(0xFFFF9501).withOpacity(0.2),
-                    borderRadius: BorderRadius.circular(10)),
-                child: Row(
-                  children: [
-                    SvgPicture.asset(
-                      ImageConstants.profitExpense,
-                    ),
-                    10.hs,
-                    Text(
-                      'Profit & Expenses summary',
-                      style: TextStyles.regular(color: Colors.black),
-                    ),
-                    Spacer(),
-                    GestureDetector(
-                      onTap: () {},
-                      child: const Icon(
-                        Icons.arrow_forward_ios_outlined,
-                      ),
-                    )
-                  ],
-                ).allp(15)),
             20.vs,
             Container(
               width: double.infinity,
@@ -382,13 +375,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 ],
               ).allp(10),
             ),
-            ElevatedButton(
-                onPressed: () async {
-                  await DatabaseService().logout();
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (c) => SignInScreen()));
-                },
-                child: const Text("Logout"))
           ],
         ).allp(16),
       ),

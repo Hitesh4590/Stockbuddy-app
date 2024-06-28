@@ -78,9 +78,9 @@ class Validators {
   /// Common email validator function
   String? validateEmail(String? value) {
     if (!isValidateField(value)) {
-      return 'enter_email'.i18n;
+      return 'enter_email';
     } else if (!isValidEmail(value)) {
-      return 'enter_valid_email'.i18n;
+      return 'enter_valid_email';
     } else {
       return null;
     }
@@ -89,9 +89,9 @@ class Validators {
   /// Common phone number validator function
   String? validatePhoneNumber(String? value) {
     if (!isValidateField(value)) {
-      return 'enter_phone_number'.i18n;
+      return 'enter phone number';
     } else if (!isValidateMobileNo(value)) {
-      return 'error_mobile_digit_restriction'.i18n;
+      return 'enter valid number';
     } else {
       return null;
     }

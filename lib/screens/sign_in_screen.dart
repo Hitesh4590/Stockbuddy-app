@@ -94,10 +94,10 @@ class _SignInScreenState extends State<SignInScreen> {
                         AppTextFormFields(
                           hint: 'Password',
                           controller: passwordController,
-                          obscureText: toggle.signinObscure,
+                          obscureText: toggle.signInObscure,
                           suffixIcon: GestureDetector(
                             onTap: () {
-                              toggle.toggleSigninObscure();
+                              toggle.toggleSignInObscure();
                             },
                             child: SvgPicture.asset(
                               ImageConstants.passwordToggle,
@@ -107,9 +107,9 @@ class _SignInScreenState extends State<SignInScreen> {
                           validator: (value) {
                             if (passwordController.text.isEmpty) {
                               return 'Please enter password';
-                            } else if (!Validators().isValidPassword(value)) {
+                            } /*else if (!Validators().isValidPassword(value)) {
                               return 'Please write 8 min character including one lower,upper and special character';
-                            }
+                            }*/
                             return null;
                           },
                         ),
@@ -143,16 +143,23 @@ class _SignInScreenState extends State<SignInScreen> {
                         ),
                         24.vs,
                         AppButton(
+                          isLoading: toggle.isLoadingSignIn,
                           labelText: 'Sign in',
                           onTap: () async {
-                            if (_formKey.currentState!.validate()) {
+                            toggle.changeScreen(0);
+                            if (_formKey.currentState?.validate() ?? false) {
+                              toggle.changeLoadingSignIn(true);
                               if (await DatabaseService().login(
                                   emailController.text.trim(),
                                   passwordController.text.trim())) {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (c) => DashBoardScreen()));
+                                toggle.changeLoadingSignIn(false);
+                                Navigator.pushAndRemoveUntil(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => DashBoardScreen()),
+                                  (Route<dynamic> route) =>
+                                      false, // This removes all the previous routes
+                                );
                               }
                             }
                           },
@@ -212,7 +219,7 @@ class _SignInScreenState extends State<SignInScreen> {
                                           builder: (c) => SignUpScreen()));
                                 },
                                 child: Text(
-                                  "Sign Up",
+                                  'Sign Up',
                                   style: TextStyles.bold(
                                       color: ColorConstants.darkGrey),
                                 ))

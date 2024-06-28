@@ -14,7 +14,7 @@ class OrdersListTile extends StatelessWidget {
     required this.total,
     required this.quantity,
   });
-  final String orderId;
+  final int orderId;
   final String date;
   final String customer;
   final String supplier;
@@ -29,7 +29,6 @@ class OrdersListTile extends StatelessWidget {
           border: Border.all(width: 1, color: ColorConstants.offWhite),
         ),
         child: Row(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Container(
               height: 92,
@@ -50,16 +49,15 @@ class OrdersListTile extends StatelessWidget {
                   style: TextStyles.medium(),
                 ),
                 Text('Customer:${customer} ', style: TextStyles.medium()),
-                Text('Supplier:${supplier} ', style: TextStyles.medium()),
+                Text('Retailer:${supplier} ', style: TextStyles.medium()),
               ],
             ).allp(10),
-            Spacer(),
+            const Spacer(),
             Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                25.vs,
                 Text(
-                  'RS ${total}',
+                  '₹ ${total}',
                   style: TextStyles.bold(fontSize: 14),
                 ),
                 Text('No of items: ${quantity} '),

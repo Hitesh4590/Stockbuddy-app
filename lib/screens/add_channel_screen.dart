@@ -45,6 +45,7 @@ class _AddChannelScreenState extends State<AddChannelScreen> {
       backgroundColor: Colors.white,
       appBar: AppBar(
         leading: IconButton(
+            iconSize: 16,
             onPressed: () {
               Navigator.pop(context);
             },
@@ -57,94 +58,118 @@ class _AddChannelScreenState extends State<AddChannelScreen> {
       ),
       body: Form(
         key: _formKey,
-        child: Column(
-          mainAxisSize: MainAxisSize.max,
-          children: [
-            40.vs,
-            Center(
-              child: InkWell(
-                onTap: () async {
-                  if (widget.channel != null) {
-                    await provider.channelImageChange();
-                  } else {
-                    await provider.getImage();
-                  }
-                },
-                child: Stack(
-                  children: [
-                    CircleAvatar(
-                      radius: 52,
-                      backgroundColor: ColorConstants.lightGrey,
-                      backgroundImage: _getBackgroundImage(provider),
-                      child: _getBackgroundImage(provider) == null
-                          ? SvgPicture.asset(ImageConstants.gallery)
-                          : null,
-                    ),
-                    Positioned(
-                      left: MediaQuery.of(context).size.width * 0.18,
-                      top: MediaQuery.of(context).size.width * 0.18,
-                      child: const CircleAvatar(
-                        radius: 15,
-                        backgroundColor: ColorConstants.offWhite,
-                        child: Icon(
-                          Icons.photo_camera,
-                          color: Colors.black,
-                        ),
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.max,
+            children: [
+              40.vs,
+              Center(
+                child: InkWell(
+                  onTap: () async {
+                    if (widget.channel != null) {
+                      await provider.channelImageChange();
+                    } else {
+                      await provider.getImage();
+                    }
+                  },
+                  child: Stack(
+                    children: [
+                      CircleAvatar(
+                        radius: 52,
+                        backgroundColor: ColorConstants.lightGrey,
+                        backgroundImage: _getBackgroundImage(provider),
+                        child: _getBackgroundImage(provider) == null
+                            ? SvgPicture.asset(ImageConstants.gallery)
+                            : null,
                       ),
-                    )
-                  ],
+                      Positioned(
+                        left: MediaQuery.of(context).size.width * 0.18,
+                        top: MediaQuery.of(context).size.width * 0.18,
+                        child: const CircleAvatar(
+                          radius: 15,
+                          backgroundColor: ColorConstants.offWhite,
+                          child: Icon(
+                            Icons.photo_camera,
+                            color: Colors.black,
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
                 ),
               ),
-            ),
-            20.vs,
-            AppTextFormFields(
-              controller: channelController,
-              hint: 'Channel Title',
-              validator: (value) {
-                Validators().isValidateField(value);
-              },
-            ),
-            20.vs,
-            AppTextFormFields.multiline(
-              minLines: 6,
-              hint: 'Notes',
-              controller: notesController,
-            ),
-            const Spacer(),
-            AppButton(
-              labelStyle: TextStyles.bold(color: Colors.white, fontSize: 16),
-              borderRadius: BorderRadius.circular(20),
-              labelText: (widget.channel != null) ? 'Update' : 'Save',
-              onTap: () async {
-                if (_formKey.currentState!.validate()) {
-                  if (widget.channel != null) {
-                    await provider.updateChannel(
-                      widget.channel!,
-                      provider.channelImage,
-                      channelController.text,
-                      notesController.text,
-                    );
-                    await provider.clearChannelImage();
-                    Navigator.pop(context);
-                  } else {
-                    final String photo =
-                        await provider.uploadImages(provider.image);
-                    final channel = ChannelModel(
-                      id: '',
-                      channelName: channelController.text,
-                      notes: notesController.text,
-                      image: photo,
-                    );
-                    await provider.addChannel(channel);
-                    provider.removeImage();
-                    Navigator.pop(context);
+              Text(
+                widget.channel != null ? '' : provider.imageError,
+                style: TextStyles.medium(color: Colors.red),
+              ),
+              20.vs,
+              AppTextFormFields(
+                controller: channelController,
+                hint: 'Channel Title',
+                validator: (value) {
+                  if (!Validators().isValidateField(value)) {
+                    return 'please add title';
                   }
-                }
-              },
-            )
-          ],
+                  return null;
+                },
+              ),
+              20.vs,
+              AppTextFormFields.multiline(
+                minLines: 6,
+                hint: 'Notes',
+                controller: notesController,
+              ),
+            ],
+          ),
         ),
       ).allp(20),
+      bottomNavigationBar: AppButton(
+        isLoading: provider.isLoading,
+        labelStyle: TextStyles.bold(color: Colors.white, fontSize: 16),
+        borderRadius: BorderRadius.circular(20),
+        labelText: (widget.channel != null) ? 'Update' : 'Save',
+        onTap: () async {
+          if (_formKey.currentState!.validate()) {
+            if (widget.channel != null) {
+              provider.changeLoading(true);
+              await provider.updateChannel(
+                widget.channel!,
+                provider.channelImage,
+                channelController.text,
+                notesController.text,
+              );
+              await provider.clearChannelImage();
+              provider.changeLoading(false);
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text('channel edited successfully'),
+                  behavior: SnackBarBehavior.floating,
+                ),
+              );
+              Navigator.pop(context);
+            } else {
+              provider.changeLoading(true);
+              final String photo = await provider.uploadImages(provider.image);
+              final channel = ChannelModel(
+                id: '',
+                channelName: channelController.text,
+                notes: notesController.text,
+                image: photo,
+              );
+              await provider.addChannel(channel);
+              provider.removeImage();
+              provider.changeLoading(false);
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text('channel added successfully'),
+                  behavior: SnackBarBehavior.floating,
+                ),
+              );
+              Navigator.pop(context);
+            }
+          }
+        },
+      ).hp(16).bp(40),
     );
   }
 

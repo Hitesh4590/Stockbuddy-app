@@ -12,6 +12,7 @@ class ColorConstants {
   static const Color inventoryInStockText = Color(0xff38773B);
   static const Color offWhite = Color(0xffEEEEEE);
   static const Color orange = Color(0xffFF9501);
+  static const Color profileBlue = Color(0xff3B4860);
 
   /// Light mode
   static const Color backgroundColorLight = Color(0xfff2f2f2);

@@ -51,6 +51,7 @@ class CheckBoxProperty {
 class DropDownTextField extends StatefulWidget {
   const DropDownTextField(
       {Key? key,
+      this.hintText,
       this.controller,
       this.initialValue,
       required this.dropDownList,
@@ -101,6 +102,7 @@ class DropDownTextField extends StatefulWidget {
   const DropDownTextField.multiSelection(
       {Key? key,
       this.controller,
+      this.hintText,
       this.displayCompleteItem = false,
       this.initialValue,
       required this.dropDownList,
@@ -240,6 +242,7 @@ class DropDownTextField extends StatefulWidget {
 
   final TextInputType? keyboardType;
   final AutovalidateMode? autovalidateMode;
+  final String? hintText;
 
   ///customize checkbox property
   final CheckBoxProperty? checkBoxProperty;
@@ -561,6 +564,9 @@ class _DropDownTextFieldState extends State<DropDownTextField>
                                   ),
                                 )
                               : null,
+                      errorText: _cnt.text.isEmpty && widget.validator != null
+                          ? widget.validator!('')
+                          : null,
                     )
                   : InputDecoration(
                       errorMaxLines: 2,
@@ -587,7 +593,7 @@ class _DropDownTextFieldState extends State<DropDownTextField>
                         ),
                       ),
                       floatingLabelBehavior: FloatingLabelBehavior.always,
-                      hintText: 'Select Your Size',
+                      hintText: widget.hintText ?? '',
                       hintStyle: TextStyles.regular(fontSize: 14),
                       suffixIcon: (_cnt.text.isEmpty || !widget.clearOption)
                           ? Icon(

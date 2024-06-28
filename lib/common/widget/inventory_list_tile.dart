@@ -5,19 +5,21 @@ import 'package:stockbuddy_flutter_app/common/theme/color_constants.dart';
 import '../theme/text_styles.dart';
 
 class InventoryListTile extends StatelessWidget {
-  final int id;
+  final bool? batch;
+  final String id;
   final String image;
   final String title;
   final int quantity;
   final String type;
-  final double price;
+  final double? price;
   InventoryListTile({
+    this.batch,
     required this.id,
     required this.image,
     required this.title,
     required this.quantity,
     required this.type,
-    required this.price,
+    this.price,
   });
 
   @override
@@ -25,8 +27,8 @@ class InventoryListTile extends StatelessWidget {
     return Container(
         width: double.infinity,
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(15),
-          border: Border.all(width: 1, color: Color(0xffEEEEEE)),
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(width: 1, color: ColorConstants.offWhite),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -34,10 +36,12 @@ class InventoryListTile extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  'SKU NO:$id',
-                  style: TextStyles.bold(),
-                ),
+                (batch ?? false)
+                    ? Text(
+                        'Batch: $id',
+                        style: TextStyles.bold(),
+                      )
+                    : Text('Sku: $id'),
                 if (quantity > 0)
                   Container(
                     width: 68,
@@ -50,7 +54,7 @@ class InventoryListTile extends StatelessWidget {
                       'In-stock',
                       style: TextStyles.regular(
                           color: ColorConstants.inventoryInStockText),
-                    ).hp(6).vp(3),
+                    ).hp(7).vp(3),
                   ),
               ],
             ),
@@ -123,13 +127,14 @@ class InventoryListTile extends StatelessWidget {
                 ),
                 const Spacer(),
                 if (quantity > 0)
-                  Text(
-                    '₹$price',
-                    style: TextStyles.bold(fontSize: 14),
-                  ),
+                  if (batch ?? false)
+                    Text(
+                      '₹$price',
+                      style: TextStyles.bold(fontSize: 14),
+                    ),
               ],
             ),
           ],
-        ).allp(5));
+        ).hp(10).vp(14));
   }
 }

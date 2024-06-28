@@ -15,10 +15,8 @@ class DatabaseService {
 
   Future<bool> login(email, password) async {
     try {
-      final user = await _auth.signInWithEmailAndPassword(
-          email: email, password: password);
+      await _auth.signInWithEmailAndPassword(email: email, password: password);
 
-      await getUser(user.user?.uid);
       return true;
     } catch (e) {
       print(e);
@@ -38,6 +36,7 @@ class DatabaseService {
           email: email, password: password);
 
       final newUser = UserModel(
+          isCompany: false,
           id: user.user!.uid,
           email: email,
           firstName: firstname,
@@ -102,20 +101,8 @@ class DatabaseService {
     }
   }
 
-  Future<String?> getUser(uid) async {
-    try {
-      final CollectionReference users =
-          FirebaseFirestore.instance.collection('Users');
-      final snapshot = await users.doc(uid).get();
-      final data = snapshot.data() as Map<String, dynamic>;
-      return 'success';
-    } catch (e) {
-      return 'Error fetching user';
-    }
-  }
-
   Future logout() async {
-    await _auth.signOut();
+    await FirebaseAuth.instance.signOut();
   }
 
   List<String> downloadUrls = [];

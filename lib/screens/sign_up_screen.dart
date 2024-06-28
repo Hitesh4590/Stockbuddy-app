@@ -1,5 +1,6 @@
 import 'package:country_code_text_field/country_code_text_field.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:stockbuddy_flutter_app/common/extension.dart';
@@ -8,9 +9,9 @@ import 'package:stockbuddy_flutter_app/common/theme/text_styles.dart';
 import 'package:stockbuddy_flutter_app/common/widget/app_button.dart';
 import 'package:stockbuddy_flutter_app/common/widget/app_textfield.dart';
 import 'package:stockbuddy_flutter_app/providers/toggle_provider.dart';
+import 'package:stockbuddy_flutter_app/screens/add_company_screen.dart';
 import 'package:stockbuddy_flutter_app/screens/dash_board_screen.dart';
 import 'package:stockbuddy_flutter_app/screens/database_service.dart';
-import 'package:stockbuddy_flutter_app/screens/home_screen.dart';
 import '../common/theme/color_constants.dart';
 import '../common/util/validators.dart';
 
@@ -131,6 +132,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           padding: const EdgeInsets.symmetric(
                               horizontal: 16, vertical: 12),
                           controller: phoneController,
+                          inputFormatters: <TextInputFormatter>[
+                            FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
+                          ],
                           decoration: InputDecoration(
                             errorBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(10),
@@ -233,20 +237,29 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         ),
                         24.vs,
                         AppButton(
-                          borderRadius: BorderRadius.circular(50),
                           labelText: 'Sign up',
+                          isLoading: toggle.isLoadingSignUp,
                           onTap: () async {
                             if (_formKey.currentState!.validate()) {
+                              toggle.changeLoadingSignUp(true);
                               if (await DatabaseService().signup(
                                   emailController.text.trim(),
                                   passwordController.text.trim(),
                                   firstnameController.text.trim(),
                                   lastnameController.text.trim(),
                                   phoneController.text.trim())) {
+                                toggle.changeLoadingSignUp(false);
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content:
+                                        Text('User registered successfully'),
+                                    behavior: SnackBarBehavior.floating,
+                                  ),
+                                );
                                 Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (c) => DashBoardScreen()));
+                                        builder: (c) => AddCompanyScreen()));
                               }
                               ;
                             }

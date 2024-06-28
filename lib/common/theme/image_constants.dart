@@ -28,5 +28,27 @@ class ImageConstants {
   static const String uploadImage = 'assets/i18n/upload_image.svg';
   static const String edit2 = 'assets/i18n/edit-2.svg';
   static const String trash2 = 'assets/i18n/trash-2.svg';
+  static const String orangeArrow = 'assets/i18n/dropdown_arrow.svg';
   static const String drawer = 'assets/i18n/drawer.svg';
+  static const String cross = 'assets/i18n/close-square.svg';
+  static const String profileTopBackground = 'assets/i18n/profile-top.svg';
+  static const String profileBackground2 = 'assets/i18n/profile_bg2.svg';
+  static const String profileArrowRight = 'assets/i18n/arrow-right.svg';
+  static const String yourProfileEdit = 'assets/i18n/your_profile_edit.svg';
+  static const String profileYourProfile =
+      'assets/i18n/profile_your_profile.svg';
+  static const String profileLogout = 'assets/i18n/profile_logout.svg';
+  static const String profileChangePassword =
+      'assets/i18n/profile_change_password.svg';
+  static const String profilePrivacyPolicy =
+      'assets/i18n/profile_privacy_policy.svg';
+  static const String backgroundImage =
+      'https://firebasestorage.googleapis.com/v0/b/stockbuddy-dev.appspot.com/o/images%2FGroup%201000004653.png?alt=media&token=56020464-daf0-4336-81be-7445abb908b7';
+  static const String addButton = 'assets/i18n/add_button.svg';
+  static const String profileLogo = 'assets/i18n/profile_logo.svg';
+  static const String todaySales = 'assets/i18n/today_sales.svg';
+  static const String todayProfit = 'assets/i18n/today_profit.svg';
+  static const String todayExpense = 'assets/i18n/today_expense.svg';
+  static const String todayDue = 'assets/i18n/today_due.svg';
+  static const String colorPicker = 'assets/i18n/color_picker.svg';
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import 'package:stockbuddy_flutter_app/common/extension.dart';
@@ -18,12 +19,29 @@ class ChannelScreen extends StatefulWidget {
   State<ChannelScreen> createState() => _ChannelScreenState();
 }
 
-class _ChannelScreenState extends State<ChannelScreen> {
+class _ChannelScreenState extends State<ChannelScreen>
+    with TickerProviderStateMixin {
+  late final SlidableController slidableController;
   @override
   void initState() {
+    slidableController = SlidableController(this);
     super.initState();
     final provider = Provider.of<ChannelProvider>(context, listen: false);
     provider.fetchChannel();
+  }
+
+  void _editChannel(BuildContext context, ChannelModel channel,
+      ChannelProvider provider) async {
+    await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => AddChannelScreen(
+          channel: channel,
+        ),
+      ),
+    );
+    provider.fetchChannel();
+    slidableController.close();
   }
 
   @override
@@ -32,40 +50,27 @@ class _ChannelScreenState extends State<ChannelScreen> {
     return Scaffold(
         backgroundColor: Colors.white,
         appBar: AppBar(
-          leading: SvgPicture.asset(
-            ImageConstants.drawer,
-            fit: BoxFit.scaleDown,
-          ).onTap(
-            () => {},
-          ),
           backgroundColor: Colors.white,
-          title: Text(
-            'Channel',
-            style: TextStyles.regularBlack(fontSize: 16),
-          ),
-          actions: [
-            GestureDetector(
-              child: Container(
-                height: 24,
-                width: 24,
-                decoration: BoxDecoration(
-                  color: Colors.black,
-                  borderRadius: BorderRadius.circular(5),
-                ),
-                child: const Icon(
-                  Icons.add,
-                  color: Colors.white,
-                ),
-              ).allp(5),
-              onTap: () async {
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'Channel',
+                style: TextStyles.regularBlack(fontSize: 16),
+              ),
+              SizedBox(
+                height: 20,
+                width: 20,
+                child: SvgPicture.asset(ImageConstants.addButton),
+              ).onTap(() async {
                 await Navigator.push(
                     context,
                     MaterialPageRoute(
                         builder: (context) => AddChannelScreen()));
                 provider.fetchChannel();
-              },
-            ),
-          ],
+              })
+            ],
+          ),
         ),
         body: SingleChildScrollView(
           child: Column(
@@ -117,6 +122,7 @@ class _ChannelScreenState extends State<ChannelScreen> {
                         return Padding(
                           padding: const EdgeInsets.only(bottom: 16),
                           child: ChannelTile(
+                            controller: slidableController,
                             image: channel.image,
                             name: channel.channelName,
                             notes: channel.notes,
@@ -136,19 +142,6 @@ class _ChannelScreenState extends State<ChannelScreen> {
   }
 }
 
-void _editChannel(BuildContext context, ChannelModel channel,
-    ChannelProvider provider) async {
-  await Navigator.push(
-    context,
-    MaterialPageRoute(
-      builder: (context) => AddChannelScreen(
-        channel: channel,
-      ),
-    ),
-  );
-  provider.fetchChannel();
-}
-
 void _deleteChannel(
     BuildContext context, ChannelModel channel, ChannelProvider provider) {
   showDialog(
@@ -165,7 +158,7 @@ void _deleteChannel(
                     onPressed: () {
                       Navigator.pop(context);
                     },
-                    icon: Icon(Icons.close))
+                    icon: const Icon(Icons.close))
               ],
             ),
             20.vs,
@@ -180,9 +173,18 @@ void _deleteChannel(
             ),
             38.vs,
             AppButton(
+              isLoading: provider.isLoadingDelete,
               labelText: 'Delete',
               onTap: () async {
+                await provider.changeLoadingDelete(true);
                 await provider.deleteChannel(channel);
+                await provider.changeLoadingDelete(false);
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text(' Channel deleted successfully'),
+                    behavior: SnackBarBehavior.floating,
+                  ),
+                );
                 Navigator.pop(context);
               },
               buttonWidth: 155,

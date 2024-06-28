@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:stockbuddy_flutter_app/common/extension.dart';
 import 'package:stockbuddy_flutter_app/common/theme/image_constants.dart';
+import 'package:stockbuddy_flutter_app/common/widget/orders_list_tile.dart';
 import 'package:stockbuddy_flutter_app/providers/orders_screen_provider.dart';
 import 'package:stockbuddy_flutter_app/screens/new_order_screen.dart';
-import '../common/theme/color_constants.dart';
+import 'package:stockbuddy_flutter_app/screens/order_details_screen.dart';
 import '../common/theme/text_styles.dart';
 import '../common/widget/app_textfield.dart';
-import '../common/widget/border_button.dart';
+import '../model/order.dart';
 
 class OrdersScreen extends StatefulWidget {
   const OrdersScreen({super.key});
@@ -18,23 +20,12 @@ class OrdersScreen extends StatefulWidget {
 }
 
 class _OrdersScreenState extends State<OrdersScreen> {
-  final GlobalKey _filterButtonGlobalKey = GlobalKey();
-  RelativeRect _calculateMenuPosition() {
-    final RenderBox button =
-        _filterButtonGlobalKey.currentContext!.findRenderObject() as RenderBox;
-    final RenderBox overlay = Overlay.of(_filterButtonGlobalKey.currentContext!)
-        .context
-        .findRenderObject() as RenderBox;
-    final Offset buttonOffset = button.localToGlobal(Offset.zero);
-    return RelativeRect.fromRect(
-      Rect.fromLTWH(
-        buttonOffset.dx,
-        buttonOffset.dy,
-        button.size.width,
-        button.size.height,
-      ),
-      Offset.zero & overlay.size,
-    );
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<OrdersScreenProvider>().fetchOrders();
+    });
   }
 
   @override
@@ -43,38 +34,25 @@ class _OrdersScreenState extends State<OrdersScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        leading: SvgPicture.asset(
-          ImageConstants.drawer,
-          fit: BoxFit.scaleDown,
-        ).onTap(
-          () => {},
-        ),
-        backgroundColor: Colors.white,
-        title: Text(
-          'Orders',
-          style: TextStyles.regularBlack(fontSize: 16),
-        ),
-        actions: [
-          GestureDetector(
-            child: Container(
-              height: 24,
-              width: 24,
-              decoration: BoxDecoration(
-                color: Colors.black,
-                borderRadius: BorderRadius.circular(5),
+          backgroundColor: Colors.white,
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'Orders',
+                style: TextStyles.regularBlack(fontSize: 16),
               ),
-              child: const Icon(
-                Icons.add,
-                color: Colors.white,
-              ),
-            ).allp(5),
-            onTap: () async {
-              await Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => NewOrderScreen()));
-            },
-          ),
-        ],
-      ),
+              SizedBox(
+                height: 20,
+                width: 20,
+                child: SvgPicture.asset(ImageConstants.addButton),
+              ).onTap(() async {
+                await Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => NewOrderScreen()));
+                provider.fetchOrders();
+              })
+            ],
+          )),
       body: SingleChildScrollView(
         child: Column(
           children: [
@@ -82,54 +60,47 @@ class _OrdersScreenState extends State<OrdersScreen> {
               children: [
                 Expanded(
                     child: AppTextFormFields(
-                  onChanged: (value) {},
+                  hint: 'Search Orders',
+                  onChanged: (value) {
+                    provider.queryChanged(value);
+                  },
                   prefixIcon: ImageConstants.search,
                 )),
-                10.hs,
-                BorderButton(
-                  isDisabled: true,
-                  key: _filterButtonGlobalKey,
-                  suffixImage: SvgPicture.asset(
-                    ImageConstants.filter,
-                    fit: BoxFit.fitWidth,
-                  ),
-                  title: '',
-                  onTap: () {
-                    showMenu(
-                      color: Colors.white,
-                      shape: RoundedRectangleBorder(
-                        side: const BorderSide(
-                            color: ColorConstants.lightGrey, width: 1),
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      elevation: 1,
-                      context: context,
-                      items: List.generate(provider.filterPopupMenus().length,
-                          (index) {
-                        final selectedValue = provider.selectedFilter;
-                        final listItemTitle =
-                            provider.filterPopupMenus()[index].title;
-                        final isItemSelected = listItemTitle == selectedValue;
-
-                        final menuList = provider.filterPopupMenus(
-                            isSelected: isItemSelected)[index];
-                        return PopupMenuItem(
-                          child: menuList,
-                          onTap: () {
-                            provider.setSelectedFilter(
-                                provider.filterPopupMenus()[index].title);
-                          },
-                        );
-                      }),
-                      position: _calculateMenuPosition(),
-                    );
-                  },
-                  height: 48,
-                  spacingVertical: 12,
-                  spacingHorizontal: 12,
-                ),
               ],
             ),
+            20.vs,
+            SizedBox(
+              width: double.infinity,
+              height: provider.allOrders.length * 200,
+              child: ListView.builder(
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: provider.allOrders.length,
+                  itemBuilder: (context, index) {
+                    final Order item = provider.allOrders[index];
+                    String formatDate(DateTime date) {
+                      final DateFormat formatter = DateFormat('d MMM yy');
+                      return formatter.format(date);
+                    }
+
+                    final String date = formatDate(item.date);
+                    return OrdersListTile(
+                            orderId: item.orderId,
+                            date: date,
+                            customer: item.customerName,
+                            supplier: item.retailerName,
+                            total: item.totalAmount,
+                            quantity: item.totalItems)
+                        .onTap(() {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => OrderDetailsScreen(
+                                    orderItem: provider.allOrders[index],
+                                    date: date,
+                                  )));
+                    }).bp(16);
+                  }),
+            )
           ],
         ).allp(20),
       ),

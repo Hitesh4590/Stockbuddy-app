@@ -4,32 +4,19 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import 'package:stockbuddy_flutter_app/common/extension.dart';
 import 'package:stockbuddy_flutter_app/common/theme/image_constants.dart';
+import 'package:stockbuddy_flutter_app/model/product.dart';
 import 'package:stockbuddy_flutter_app/providers/inventory_details_provider.dart';
+import 'package:stockbuddy_flutter_app/screens/dash_board_screen.dart';
+import 'package:stockbuddy_flutter_app/screens/edit_batch_screen.dart';
 import '../common/theme/color_constants.dart';
 import '../common/theme/text_styles.dart';
+import '../providers/toggle_provider.dart';
 
 class InventoryDetailsScreen extends StatefulWidget {
-  const InventoryDetailsScreen({
-    super.key,
-    required this.skuNo,
-    required this.title,
-    required this.type,
-    required this.sellingPrice,
-    required this.purchasePrice,
-    required this.description,
-    required this.images,
-    required this.supplierName,
-    required this.quantity,
-  });
-  final int skuNo;
-  final String title;
-  final String type;
-  final double sellingPrice;
-  final double purchasePrice;
-  final String description;
-  final List<String> images;
-  final String supplierName;
-  final int quantity;
+  const InventoryDetailsScreen(
+      {super.key, required this.detail, required this.batch});
+  final ProductDetail detail;
+  final ProductBatch batch;
 
   @override
   State<InventoryDetailsScreen> createState() => _InventoryDetailsScreenState();
@@ -44,29 +31,16 @@ class _InventoryDetailsScreenState extends State<InventoryDetailsScreen> {
       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.white,
+        leading: IconButton(
+            iconSize: 16,
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            icon: const Icon(Icons.arrow_back_ios)),
         title: Text(
           'Inventory Details',
           style: TextStyles.regularBlack(fontSize: 16),
         ),
-        actions: [
-          GestureDetector(
-            child: Container(
-              height: 24,
-              width: 24,
-              decoration: BoxDecoration(
-                color: Colors.black,
-                borderRadius: BorderRadius.circular(5),
-              ),
-              child: const Icon(
-                Icons.add,
-                color: Colors.white,
-              ),
-            ).allp(5),
-            onTap: () {
-              Navigator.pop(context);
-            },
-          ),
-        ],
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -83,14 +57,14 @@ class _InventoryDetailsScreenState extends State<InventoryDetailsScreen> {
                       provider.changePhoto(index);
                     },
                   ),
-                  items: List.generate(widget.images.length, (i) {
+                  items: List.generate(widget.detail.photos.length, (i) {
                     return Builder(
                       builder: (BuildContext context) {
                         return Container(
                           width: MediaQuery.of(context).size.width,
                           margin: EdgeInsets.symmetric(horizontal: 5.0),
                           child: Image.network(
-                            '${widget.images[i]}',
+                            widget.detail.photos[i],
                             fit: BoxFit.fill,
                           ),
                         );
@@ -115,7 +89,14 @@ class _InventoryDetailsScreenState extends State<InventoryDetailsScreen> {
                             child:
                                 SvgPicture.asset(ImageConstants.edit).allp(2),
                           ),
-                          onTap: () {},
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => EditBatchScreen(
+                                        detail: widget.detail,
+                                        batch: widget.batch)));
+                          },
                         ),
                         10.vs,
                         GestureDetector(
@@ -130,7 +111,29 @@ class _InventoryDetailsScreenState extends State<InventoryDetailsScreen> {
                             child:
                                 SvgPicture.asset(ImageConstants.trash).allp(2),
                           ),
-                          onTap: () {},
+                          onTap: () async {
+                            if (widget.batch.quantity ==
+                                widget.batch.available) {
+                              await provider.delete(
+                                  widget.detail, widget.batch);
+                              ToggleProvider().changeScreen(2);
+                              Navigator.pushAndRemoveUntil(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => DashBoardScreen()),
+                                (Route<dynamic> route) =>
+                                    false, // This removes all the previous routes
+                              );
+                            } else {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text(
+                                      'Cannot delete, items are sold from this batch'),
+                                  behavior: SnackBarBehavior.floating,
+                                ),
+                              );
+                            }
+                          },
                         ),
                       ],
                     ))
@@ -142,7 +145,7 @@ class _InventoryDetailsScreenState extends State<InventoryDetailsScreen> {
               child: ListView.builder(
                 shrinkWrap: true,
                 scrollDirection: Axis.horizontal,
-                itemCount: widget.images.length,
+                itemCount: widget.detail.photos.length,
                 itemBuilder: (context, index) {
                   return GestureDetector(
                     child: Container(
@@ -156,7 +159,7 @@ class _InventoryDetailsScreenState extends State<InventoryDetailsScreen> {
                       width: 38,
                       margin: EdgeInsets.symmetric(horizontal: 5.0),
                       child: Image.network(
-                        widget.images[index],
+                        widget.detail.photos[index],
                       ),
                     ),
                     onTap: () async {
@@ -169,19 +172,19 @@ class _InventoryDetailsScreenState extends State<InventoryDetailsScreen> {
             ),
             20.vs,
             Text(
-              'SKU NO:${widget.skuNo}',
+              'SKU NO:${widget.detail.sku}',
               style: TextStyles.regularBlack(),
             ),
             20.vs,
             Text(
-              widget.title,
+              widget.detail.title,
               style: TextStyles.bold(fontSize: 18),
             ),
             20.vs,
             Row(
               children: [
                 Text(
-                  'Qty: ${widget.quantity}',
+                  'Qty: ${widget.batch.available}',
                   style: TextStyles.regularBlack(),
                 ),
                 10.hs,
@@ -192,7 +195,7 @@ class _InventoryDetailsScreenState extends State<InventoryDetailsScreen> {
                 ),
                 10.hs,
                 Text(
-                  'Type: ${widget.type}',
+                  'Type: ${widget.detail.type}',
                   style: TextStyles.regularBlack(),
                 ),
               ],
@@ -206,20 +209,31 @@ class _InventoryDetailsScreenState extends State<InventoryDetailsScreen> {
                 ),
                 5.hs,
                 Text(
-                  widget.sellingPrice.toString(),
+                  widget.batch.sellPrice.toString(),
                   style: TextStyles.regularBlack(),
                 ),
-                Spacer(),
+                const Spacer(),
                 Text(
                   'Purchase Price',
                   style: TextStyles.regular(),
                 ),
                 5.hs,
                 Text(
-                  widget.purchasePrice.toString(),
+                  widget.batch.buyPrice.toString(),
                   style: TextStyles.regularBlack(),
                 )
               ],
+            ),
+            16.vs,
+            const Text('Color'),
+            10.vs,
+            Container(
+              height: 20,
+              width: 20,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Color(int.parse(widget.detail.color, radix: 16)),
+              ),
             ),
             20.vs,
             RichText(
@@ -227,7 +241,9 @@ class _InventoryDetailsScreenState extends State<InventoryDetailsScreen> {
                 text: 'Supplier Name ',
                 style: TextStyles.regularBlack(),
                 children: <TextSpan>[
-                  TextSpan(text: widget.supplierName, style: TextStyles.bold()),
+                  TextSpan(
+                      text: widget.batch.supplierName,
+                      style: TextStyles.bold()),
                 ],
               ),
             ),
@@ -240,7 +256,7 @@ class _InventoryDetailsScreenState extends State<InventoryDetailsScreen> {
             Column(
               children: [
                 Text(
-                  widget.description,
+                  widget.detail.description,
                   style: TextStyles.regularBlack(),
                 ),
               ],

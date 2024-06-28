@@ -1,10 +1,11 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:stockbuddy_flutter_app/common/extension.dart';
 import 'package:stockbuddy_flutter_app/common/theme/image_constants.dart';
 import 'package:stockbuddy_flutter_app/common/theme/text_styles.dart';
-import 'package:stockbuddy_flutter_app/common/widget/app_textfield.dart';
 import 'package:stockbuddy_flutter_app/common/widget/app_button.dart';
+import 'package:stockbuddy_flutter_app/common/widget/app_textfield.dart';
 
 import '../common/theme/color_constants.dart';
 
@@ -21,6 +22,11 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
 
   @override
   Widget build(BuildContext context) {
+    Future<void> forgotPassword() async {
+      await FirebaseAuth.instance
+          .sendPasswordResetEmail(email: emailController.text.trim());
+    }
+
     return Scaffold(
       // backgroundColor: ColorConstants.darkGrey,
       body: Stack(
@@ -87,9 +93,28 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                         ),
                         30.vs,
                         AppButton(
+                          labelStyle: TextStyles.bold(
+                              fontSize: 14, color: Colors.white),
                           labelText: 'Request Reset Link',
-                          onTap: () {},
-                          prefixIcon: Icon(Icons.add_reaction_rounded),
+                          onTap: () async {
+                            try {
+                              await forgotPassword();
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text('Reset Password Email Sent'),
+                                  behavior: SnackBarBehavior.floating,
+                                ),
+                              );
+                              Navigator.pop(context);
+                            } catch (e) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text('Invalid Email'),
+                                  behavior: SnackBarBehavior.floating,
+                                ),
+                              );
+                            }
+                          },
                           borderColor: Colors.grey,
                         ),
                         10.vs,

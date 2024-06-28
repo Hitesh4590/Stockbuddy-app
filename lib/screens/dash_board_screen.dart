@@ -4,14 +4,12 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import 'package:stockbuddy_flutter_app/providers/toggle_provider.dart';
 import 'package:stockbuddy_flutter_app/screens/add_company_screen.dart';
-import 'package:stockbuddy_flutter_app/screens/add_inventory_screen.dart';
 import 'package:stockbuddy_flutter_app/screens/channel_screen.dart';
-import 'package:stockbuddy_flutter_app/screens/forgot_password_screen.dart';
 import 'package:stockbuddy_flutter_app/screens/home_screen.dart';
-import 'package:stockbuddy_flutter_app/screens/inventory_details_screen.dart';
 import 'package:stockbuddy_flutter_app/screens/inventory_list_screen.dart';
+import 'package:stockbuddy_flutter_app/screens/order_details_screen.dart';
 import 'package:stockbuddy_flutter_app/screens/orders_screen.dart';
-import 'package:stockbuddy_flutter_app/common/widget/channel_tile.dart';
+import 'package:stockbuddy_flutter_app/screens/profile_screen.dart';
 
 import '../common/theme/image_constants.dart';
 
@@ -21,7 +19,7 @@ class DashBoardScreen extends StatelessWidget {
     OrdersScreen(),
     InventoryListScreen(),
     ChannelScreen(),
-    AddCompanyScreen()
+    ProfileScreen()
   ];
   @override
   Widget build(BuildContext context) {

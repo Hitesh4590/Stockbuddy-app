@@ -7,8 +7,10 @@ class UserModel {
   String lastName;
   String phone;
   String userId;
+  bool isCompany;
 
   UserModel({
+    required this.isCompany,
     required this.id,
     required this.email,
     required this.firstName,
@@ -20,6 +22,7 @@ class UserModel {
   // Convert a User object into a Map object
   Map<String, dynamic> toMap() {
     return {
+      'isCompany': isCompany,
       'email': email,
       'first_name': firstName,
       'last_name': lastName,
@@ -31,6 +34,7 @@ class UserModel {
   // Extract a User object from a DocumentSnapshot
   factory UserModel.fromDocument(DocumentSnapshot doc) {
     return UserModel(
+      isCompany: doc['isCompany'],
       id: doc.id,
       email: doc['email'],
       firstName: doc['first_name'],

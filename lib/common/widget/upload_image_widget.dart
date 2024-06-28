@@ -19,7 +19,6 @@ class UploadImageWidget extends StatelessWidget {
     XFile? image = await _picker.pickImage(source: ImageSource.gallery);
     if (image != null) {
       provider.addImage(image, index);
-      provider.addImageError();
     }
   }
 
@@ -35,7 +34,7 @@ class UploadImageWidget extends StatelessWidget {
               height: 70,
               width: 70,
               decoration: BoxDecoration(
-                  color: Color(0xffF1F1F1),
+                  color: const Color(0xffF1F1F1),
                   borderRadius: BorderRadius.circular(10)),
               child: provider.images[index] == null
                   ? SvgPicture.asset(
@@ -61,7 +60,6 @@ class UploadImageWidget extends StatelessWidget {
                 ),
                 onTap: () {
                   provider.removeImage(index);
-                  provider.addImageError();
                 },
               ),
             )

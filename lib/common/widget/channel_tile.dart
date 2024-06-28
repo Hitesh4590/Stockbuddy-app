@@ -12,10 +12,12 @@ class ChannelTile extends StatelessWidget {
   final String notes;
   final bool editable;
   final VoidCallback? editOnTap;
+  final SlidableController? controller;
   final VoidCallback? deleteOnTap;
 
   const ChannelTile({
     super.key,
+    this.controller,
     required this.name,
     required this.image,
     required this.notes,
@@ -27,6 +29,7 @@ class ChannelTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Slidable(
+      controller: controller,
       // Specify a key if the Slidable is dismissible.
       key: const ValueKey(0),
 
@@ -34,7 +37,7 @@ class ChannelTile extends StatelessWidget {
 
       // The end action pane is the one at the right or the bottom side.
       endActionPane: ActionPane(
-        extentRatio: (editable) ? 0.28 : 0.00001,
+        extentRatio: (editable) ? 0.35 : 0.00001,
         motion: const ScrollMotion(),
         children: [
           if (editable)

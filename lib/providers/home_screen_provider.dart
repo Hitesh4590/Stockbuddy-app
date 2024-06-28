@@ -31,6 +31,28 @@ class HomeScreenProvider extends ChangeNotifier {
   final now = DateTime.now();
   late DateTime startDate;
   late DateTime endDate;
+
+  List<String> _allChannel = [];
+  List<String> get allChannel => _allChannel;
+  Future<void> fetchChannel() async {
+    final DocumentReference channel = FirebaseFirestore.instance
+        .collection('Users')
+        .doc(FirebaseAuth.instance.currentUser?.uid)
+        .collection('Channel')
+        .doc(FirebaseAuth.instance.currentUser?.uid);
+    final QuerySnapshot querySnapshot1 =
+        await channel.collection('System_Channel').get();
+    final QuerySnapshot querySnapshot2 =
+        await channel.collection('User_Channel').get();
+    final List<String> systemChannel =
+        querySnapshot1.docs.map((doc) => doc['title'] as String).toList();
+    final List<String> userChannel =
+        querySnapshot2.docs.map((doc) => doc['title'] as String).toList();
+    _allChannel = systemChannel + userChannel;
+
+    notifyListeners();
+  }
+
   Future<void> fetchChartData() async {
     switch (selectedRadioValue) {
       case 0:
@@ -57,7 +79,8 @@ class HomeScreenProvider extends ChangeNotifier {
             for (var doc in querySnapshot.docs) {
               final DateTime date = (doc['date'] as Timestamp).toDate();
               int year = date.year;
-              yearlySums[year] = yearlySums[year]! + doc['quantity'].toDouble();
+              yearlySums[year] =
+                  yearlySums[year]! + /*doc['quantity'].toDouble()*/ 1;
             }
             print(yearlySums);
             _data.clear();
@@ -116,7 +139,7 @@ class HomeScreenProvider extends ChangeNotifier {
               DateTime date = (doc['date'] as Timestamp).toDate();
               int month = date.month;
               monthlySums[month] =
-                  monthlySums[month]! + doc['quantity'].toDouble();
+                  monthlySums[month]! + 1 /*doc['quantity'].toDouble()*/;
             }
             _data.clear();
             monthlySums.forEach((month, sum) {
@@ -162,7 +185,7 @@ class HomeScreenProvider extends ChangeNotifier {
               DateTime date = (doc['date'] as Timestamp).toDate();
               int day = date.weekday %
                   7; // Adjust to get correct index for Sunday as 0
-              weeklySums[day] += doc['quantity'].toDouble();
+              weeklySums[day] += /*doc['quantity'].toDouble()*/ 1;
             }
             print(weeklySums);
 
@@ -215,7 +238,8 @@ class HomeScreenProvider extends ChangeNotifier {
             for (var doc in querySnapshot.docs) {
               DateTime date = (doc['date'] as Timestamp).toDate();
               int year = date.year;
-              yearlySums[year] = yearlySums[year]! + doc['price'].toDouble();
+              yearlySums[year] =
+                  yearlySums[year]! + doc['totalAmount'].toDouble();
             }
             print(yearlySums);
             _data.clear();
@@ -274,7 +298,7 @@ class HomeScreenProvider extends ChangeNotifier {
               DateTime date = (doc['date'] as Timestamp).toDate();
               int month = date.month;
               monthlySums[month] =
-                  monthlySums[month]! + doc['price'].toDouble();
+                  monthlySums[month]! + doc['totalAmount'].toDouble();
             }
             _data.clear();
             monthlySums.forEach((month, sum) {
@@ -320,7 +344,7 @@ class HomeScreenProvider extends ChangeNotifier {
               DateTime date = (doc['date'] as Timestamp).toDate();
               int day = date.weekday %
                   7; // Adjust to get correct index for Sunday as 0
-              weeklySums[day] += doc['price'].toDouble();
+              weeklySums[day] += doc['totalAmount'].toDouble();
             }
             print(weeklySums);
 
@@ -347,6 +371,78 @@ class HomeScreenProvider extends ChangeNotifier {
             _bottomTitles = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
             break;
         }
+    }
+    notifyListeners();
+  }
+
+  int _count = 0;
+  int get count => _count;
+  Future<void> increment() async {
+    _count += 1;
+    if (_count == 6) {
+      _count = 1;
+    }
+    notifyListeners();
+  }
+
+  double _todaySales = 0;
+  double get todaySales => _todaySales;
+  double _todayExpense = 0;
+  double get todayExpense => _todayExpense;
+  double _todayProfit = 0;
+  double get todayProfit => _todayProfit;
+
+  Future<void> fetchStats() async {
+    _todayProfit = 0;
+    _todaySales = 0;
+    _todayExpense = 0;
+    final CollectionReference order = FirebaseFirestore.instance
+        .collection('Users')
+        .doc(FirebaseAuth.instance.currentUser?.uid)
+        .collection('Orders');
+    DateTime now = new DateTime.now();
+    DateTime date = new DateTime(now.year, now.month, now.day);
+    QuerySnapshot querySnapshot =
+        await order.where('date', isGreaterThan: date).get();
+    for (var doc in querySnapshot.docs) {
+      _todaySales += doc['totalAmount'];
+    }
+    //
+    //
+    final CollectionReference inventory = FirebaseFirestore.instance
+        .collection('Users')
+        .doc(FirebaseAuth.instance.currentUser?.uid)
+        .collection('Inventory');
+    QuerySnapshot inventorySnapshot = await inventory.get();
+    for (QueryDocumentSnapshot inventoryDoc in inventorySnapshot.docs) {
+      QuerySnapshot productDetailsSnapshot = await inventory
+          .doc(inventoryDoc.id)
+          .collection('ProductDetails')
+          .get();
+
+      for (QueryDocumentSnapshot productDetailDoc
+          in productDetailsSnapshot.docs) {
+        QuerySnapshot batchesSnapshot = await inventory
+            .doc(inventoryDoc.id)
+            .collection('ProductDetails')
+            .doc(productDetailDoc.id)
+            .collection('Batches')
+            .where('date', isGreaterThanOrEqualTo: date)
+            .get();
+
+        for (QueryDocumentSnapshot batchDoc in batchesSnapshot.docs) {
+          int quantity = batchDoc['quantity'];
+          print(quantity);
+          double buyPrice = batchDoc['buy_price'];
+          print(buyPrice);
+          _todayExpense += (quantity * buyPrice);
+          /* Map<String, dynamic> batchData =
+              batchDoc.data() as Map<String, dynamic>;
+          double quantity = batchData['quantity'];
+          double buyPrice = batchData['buy_price'];
+          _todayExpense += quantity * buyPrice;*/
+        }
+      }
     }
     notifyListeners();
   }

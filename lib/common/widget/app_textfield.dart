@@ -27,6 +27,7 @@ class AppTextFormFields extends StatefulWidget {
     this.prefixIcon,
     this.showError = true,
     this.onChanged,
+    this.onSubmitted,
   });
 
   AppTextFormFields.prefix({
@@ -50,6 +51,7 @@ class AppTextFormFields extends StatefulWidget {
     this.readOnly = false,
     this.showError = true,
     this.onChanged,
+    this.onSubmitted,
   });
 
   AppTextFormFields.multiline({
@@ -73,6 +75,7 @@ class AppTextFormFields extends StatefulWidget {
     this.showError = true,
     this.prefixIcon,
     this.onChanged,
+    this.onSubmitted,
   });
 
   AppTextFormFields.intOnly({
@@ -95,6 +98,7 @@ class AppTextFormFields extends StatefulWidget {
     this.showError = true,
     this.prefixIcon,
     this.onChanged,
+    this.onSubmitted,
   }) : textInputType = const TextInputType.numberWithOptions(
             decimal: false, signed: false);
 
@@ -116,6 +120,7 @@ class AppTextFormFields extends StatefulWidget {
   final bool readOnly;
   final bool showError;
   ValueChanged<String>? onChanged;
+  ValueChanged<String>? onSubmitted;
   final bool leftborder;
 
   @override
@@ -160,6 +165,7 @@ class _AppTextFormFieldsState extends State<AppTextFormFields> {
       minLines: widget.minLines,
       maxLines: widget.obscureText ? 1 : widget.maxLines,
       onChanged: widget.onChanged,
+      onFieldSubmitted: widget.onSubmitted,
       decoration: InputDecoration(
         filled: true,
         fillColor: Color(0xFFFFFF),
@@ -190,7 +196,13 @@ class _AppTextFormFieldsState extends State<AppTextFormFields> {
           ),
         ),
         disabledBorder: border,
-        focusedErrorBorder: border,
+        focusedErrorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10),
+          borderSide: const BorderSide(
+            color: Colors.red,
+            width: 1,
+          ),
+        ),
         suffixIconColor: ColorConstants.lightGrey,
         suffixIcon: widget.suffixIcon,
         prefixIcon: ((widget.prefixIcon) != null)
@@ -202,7 +214,7 @@ class _AppTextFormFieldsState extends State<AppTextFormFields> {
                   child: Center(
                     child: SvgPicture.asset(
                       widget.prefixIcon!,
-                      colorFilter: ColorFilter.mode(
+                      colorFilter: const ColorFilter.mode(
                           ColorConstants.black, BlendMode.srcIn),
                       fit: BoxFit.scaleDown,
                     ),

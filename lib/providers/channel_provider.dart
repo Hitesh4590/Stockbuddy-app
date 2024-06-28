@@ -132,13 +132,12 @@ class ChannelProvider extends ChangeNotifier {
 
   Future<void> updateChannel(
       ChannelModel channel, String image, String title, String notes) async {
-    final userId = FirebaseAuth.instance.currentUser?.uid;
     try {
-      if (userId != null) {
+      if (FirebaseAuth.instance.currentUser?.uid != null) {
         final querySnapshot = await usersCollection
-            .doc(userId)
+            .doc(FirebaseAuth.instance.currentUser?.uid)
             .collection('Channel')
-            .doc(userId)
+            .doc(FirebaseAuth.instance.currentUser?.uid)
             .collection('User_Channel')
             .where('title', isEqualTo: channel.channelName)
             .where('image', isEqualTo: channel.image)
@@ -154,5 +153,26 @@ class ChannelProvider extends ChangeNotifier {
     } catch (e) {
       print(e);
     }
+  }
+
+  bool _isLoading = false;
+  bool get isLoading => _isLoading;
+  Future<void> changeLoading(bool value) async {
+    _isLoading = value;
+    notifyListeners();
+  }
+
+  String _imageError = '';
+  String get imageError => _imageError;
+  Future<void> imageErrorMessage(String value) async {
+    _imageError = value;
+    notifyListeners();
+  }
+
+  bool _isLoadingDelete = false;
+  bool get isLoadingDelete => _isLoadingDelete;
+  Future<void> changeLoadingDelete(bool value) async {
+    _isLoadingDelete = value;
+    notifyListeners();
   }
 }
